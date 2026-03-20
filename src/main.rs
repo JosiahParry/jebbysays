@@ -25,6 +25,28 @@ use tracing_subscriber::{
 use auth::{OAuthConfig, jwks::JwksCache, middleware::auth_middleware};
 use http::McpState;
 
+async fn oauth_authorization_server(
+    axum::extract::State(state): axum::extract::State<Arc<McpState>>,
+) -> Json<serde_json::Value> {
+    let issuer = state.oauth.issuer.trim_end_matches('/');
+    Json(json!({
+        "issuer": issuer,
+        "authorization_endpoint": format!("{issuer}/authorize"),
+        "token_endpoint": format!("{issuer}/oauth/token"),
+        "response_types_supported": ["code"],
+        "code_challenge_methods_supported": ["S256"],
+    }))
+}
+
+async fn oauth_protected_resource(
+    axum::extract::State(state): axum::extract::State<Arc<McpState>>,
+) -> Json<serde_json::Value> {
+    Json(json!({
+        "resource": state.oauth.audience,
+        "authorization_servers": [state.oauth.audience],
+    }))
+}
+
 #[derive(Parser)]
 #[command(name = "chief", about = "Your personal chief of staff")]
 struct Cli {
@@ -78,10 +100,12 @@ async fn main() -> anyhow::Result<()> {
             sub.with(tracing_subscriber::fmt::layer()).init();
 
             let ct = CancellationToken::new();
-            let jwks = Arc::new(JwksCache::new(Arc::new(OAuthConfig::from_env())).await?);
+            let oauth = Arc::new(OAuthConfig::from_env());
+            let jwks = Arc::new(JwksCache::new(oauth.clone()).await?);
             let state = Arc::new(McpState {
                 db: portfolio.db,
                 ct: ct.child_token(),
+                oauth,
             });
 
             let cors = CorsLayer::new()
@@ -92,24 +116,20 @@ async fn main() -> anyhow::Result<()> {
             let router = Router::new()
                 .route("/mcp", axum::routing::any(http::mcp_handler))
                 .route_layer(middleware::from_fn_with_state(jwks, auth_middleware))
+                .with_state(state.clone())
+                .route(
+                    "/.well-known/oauth-authorization-server",
+                    get(oauth_authorization_server),
+                )
+                .route(
+                    "/.well-known/oauth-protected-resource",
+                    get(oauth_protected_resource),
+                )
+                .route(
+                    "/.well-known/oauth-protected-resource/mcp",
+                    get(oauth_protected_resource),
+                )
                 .with_state(state)
-                .route("/.well-known/oauth-authorization-server", get(|| async {
-                    let config = OAuthConfig::from_env();
-                    Json(json!({
-                        "issuer": config.issuer,
-                        "authorization_endpoint": format!("{}/authorize", config.issuer.trim_end_matches('/')),
-                        "token_endpoint": format!("{}/oauth/token", config.issuer.trim_end_matches('/')),
-                        "response_types_supported": ["code"],
-                        "code_challenge_methods_supported": ["S256"],
-                    }))
-                }))
-                .route("/.well-known/oauth-protected-resource", get(|| async {
-                    let config = OAuthConfig::from_env();
-                    Json(json!({
-                        "resource": config.audience,
-                        "authorization_servers": [config.issuer],
-                    }))
-                }))
                 .layer(cors);
 
             let addr = format!("127.0.0.1:{port}");

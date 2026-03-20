@@ -20,6 +20,7 @@ use crate::portfolio::Portfolio;
 pub(crate) struct McpState {
     pub(crate) db: SqlitePool,
     pub(crate) ct: CancellationToken,
+    pub(crate) oauth: Arc<crate::auth::OAuthConfig>,
 }
 
 pub(crate) async fn mcp_handler(

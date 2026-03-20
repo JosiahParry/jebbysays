@@ -13,6 +13,7 @@ pub struct TaskRow {
     pub context: Option<String>,
     pub tags: Option<Json<Vec<String>>>,
     pub objective: String,
+    pub user_id: String,
 }
 
 #[derive(Debug, Serialize)]
@@ -26,6 +27,7 @@ pub struct Task {
     pub context: Option<String>,
     pub tags: Option<Vec<String>>,
     pub objective: String,
+    pub user_id: String,
 }
 
 impl From<TaskRow> for Task {
@@ -45,6 +47,7 @@ impl From<TaskRow> for Task {
             context: row.context,
             tags,
             objective: row.objective,
+            user_id: row.user_id,
         }
     }
 }
@@ -55,4 +58,5 @@ pub struct Objective {
     pub title: String,
     pub context: Option<String>,
     pub priority: i64,
+    pub user_id: String,
 }

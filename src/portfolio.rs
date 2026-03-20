@@ -23,8 +23,9 @@ impl Portfolio {
     pub async fn get_task(&self, id: &str) -> Result<Task> {
         let row = sqlx::query_as!(
             TaskRow,
-            "SELECT id as \"id!\", created as \"created!\", completed, deadline, priority as \"priority!\", title as \"title!\", context, tags as \"tags: _\", objective as \"objective!\" FROM tasks WHERE id = ?",
-            id
+            "SELECT id as \"id!\", created as \"created!\", completed, deadline, priority as \"priority!\", title as \"title!\", context, tags as \"tags: _\", objective as \"objective!\", user_id as \"user_id!\" FROM tasks WHERE id = ? AND user_id = ?",
+            id,
+            self.user_id
         )
         .fetch_one(&self.db)
         .await?;
@@ -34,7 +35,8 @@ impl Portfolio {
     pub async fn list_all_tasks(&self) -> Result<Vec<Task>> {
         let rows = sqlx::query_as!(
             TaskRow,
-            "SELECT id as \"id!\", created as \"created!\", completed, deadline, priority as \"priority!\", title as \"title!\", context, tags as \"tags: _\", objective as \"objective!\" FROM tasks"
+            "SELECT id as \"id!\", created as \"created!\", completed, deadline, priority as \"priority!\", title as \"title!\", context, tags as \"tags: _\", objective as \"objective!\", user_id as \"user_id!\" FROM tasks WHERE user_id = ?",
+            self.user_id
         )
         .fetch_all(&self.db)
         .await?;
@@ -44,7 +46,8 @@ impl Portfolio {
     pub async fn list_incomplete_tasks(&self) -> Result<Vec<Task>> {
         let rows = sqlx::query_as!(
             TaskRow,
-            "SELECT id as \"id!\", created as \"created!\", completed, deadline, priority as \"priority!\", title as \"title!\", context, tags as \"tags: _\", objective as \"objective!\" FROM tasks WHERE completed IS NULL"
+            "SELECT id as \"id!\", created as \"created!\", completed, deadline, priority as \"priority!\", title as \"title!\", context, tags as \"tags: _\", objective as \"objective!\", user_id as \"user_id!\" FROM tasks WHERE completed IS NULL AND user_id = ?",
+            self.user_id
         )
         .fetch_all(&self.db)
         .await?;
@@ -54,7 +57,8 @@ impl Portfolio {
     pub async fn list_completed_tasks(&self) -> Result<Vec<Task>> {
         let rows = sqlx::query_as!(
             TaskRow,
-            "SELECT id as \"id!\", created as \"created!\", completed, deadline, priority as \"priority!\", title as \"title!\", context, tags as \"tags: _\", objective as \"objective!\" FROM tasks WHERE completed IS NOT NULL"
+            "SELECT id as \"id!\", created as \"created!\", completed, deadline, priority as \"priority!\", title as \"title!\", context, tags as \"tags: _\", objective as \"objective!\", user_id as \"user_id!\" FROM tasks WHERE completed IS NOT NULL AND user_id = ?",
+            self.user_id
         )
         .fetch_all(&self.db)
         .await?;
@@ -68,8 +72,9 @@ impl Portfolio {
             .as_millisecond();
         let rows = sqlx::query_as!(
             TaskRow,
-            "SELECT id as \"id!\", created as \"created!\", completed, deadline, priority as \"priority!\", title as \"title!\", context, tags as \"tags: _\", objective as \"objective!\" FROM tasks WHERE completed >= ?",
-            cutoff
+            "SELECT id as \"id!\", created as \"created!\", completed, deadline, priority as \"priority!\", title as \"title!\", context, tags as \"tags: _\", objective as \"objective!\", user_id as \"user_id!\" FROM tasks WHERE completed >= ? AND user_id = ?",
+            cutoff,
+            self.user_id
         )
         .fetch_all(&self.db)
         .await?;
@@ -79,8 +84,9 @@ impl Portfolio {
     pub async fn get_objective(&self, id: &str) -> Result<Objective> {
         let obj = sqlx::query_as!(
             Objective,
-            "SELECT id as \"id!\", title as \"title!\", context, priority as \"priority!\" FROM objectives WHERE id = ?",
-            id
+            "SELECT id as \"id!\", title as \"title!\", context, priority as \"priority!\", user_id as \"user_id!\" FROM objectives WHERE id = ? AND user_id = ?",
+            id,
+            self.user_id
         )
         .fetch_one(&self.db)
         .await?;
@@ -90,7 +96,8 @@ impl Portfolio {
     pub async fn list_objectives(&self) -> Result<Vec<Objective>> {
         let objs = sqlx::query_as!(
             Objective,
-            "SELECT id as \"id!\", title as \"title!\", context, priority as \"priority!\" FROM objectives"
+            "SELECT id as \"id!\", title as \"title!\", context, priority as \"priority!\", user_id as \"user_id!\" FROM objectives WHERE user_id = ?",
+            self.user_id
         )
         .fetch_all(&self.db)
         .await?;

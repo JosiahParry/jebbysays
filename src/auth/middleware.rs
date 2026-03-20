@@ -22,11 +22,12 @@ pub async fn auth_middleware(
         .and_then(|v| v.strip_prefix("Bearer "))
         .ok_or(StatusCode::UNAUTHORIZED)?;
 
-    let sub = jwks
-        .validate_token(token)
-        .await
-        .map_err(|_| StatusCode::UNAUTHORIZED)?;
+    let sub = jwks.validate_token(token).await.map_err(|e| {
+        tracing::debug!("token validation failed: {e}");
+        StatusCode::UNAUTHORIZED
+    })?;
 
+    tracing::debug!("authenticated user: {sub}");
     request.extensions_mut().insert(sub);
     Ok(next.run(request).await)
 }

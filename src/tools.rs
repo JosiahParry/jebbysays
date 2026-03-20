@@ -99,8 +99,8 @@ impl Portfolio {
         let deadline = params.deadline.map(|t| t.as_millisecond());
 
         sqlx::query(
-            "INSERT INTO tasks (id, created, deadline, priority, title, context, tags, objective)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO tasks (id, created, deadline, priority, title, context, tags, objective, user_id)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
         )
         .bind(&id)
         .bind(created)
@@ -110,6 +110,7 @@ impl Portfolio {
         .bind(&params.context)
         .bind(&tags)
         .bind(&objective)
+        .bind(&self.user_id)
         .execute(&self.db)
         .await
         .map_err(|e| McpError::internal_error(e.to_string(), None))?;
@@ -127,14 +128,17 @@ impl Portfolio {
         let id = Ulid::new().to_string();
         let priority = params.priority.unwrap_or(3);
 
-        sqlx::query("INSERT INTO objectives (id, title, context, priority) VALUES (?, ?, ?, ?)")
-            .bind(&id)
-            .bind(&params.title)
-            .bind(&params.context)
-            .bind(priority)
-            .execute(&self.db)
-            .await
-            .map_err(|e| McpError::internal_error(e.to_string(), None))?;
+        sqlx::query(
+            "INSERT INTO objectives (id, title, context, priority, user_id) VALUES (?, ?, ?, ?, ?)",
+        )
+        .bind(&id)
+        .bind(&params.title)
+        .bind(&params.context)
+        .bind(priority)
+        .bind(&self.user_id)
+        .execute(&self.db)
+        .await
+        .map_err(|e| McpError::internal_error(e.to_string(), None))?;
 
         Ok(CallToolResult::success(vec![Content::text(format!(
             "Successfully added objective with id: {id}"
@@ -146,8 +150,9 @@ impl Portfolio {
         &self,
         Parameters(params): Parameters<ObjectiveIdParams>,
     ) -> Result<CallToolResult, McpError> {
-        let rows = sqlx::query("DELETE FROM objectives WHERE id = ?")
+        let rows = sqlx::query("DELETE FROM objectives WHERE id = ? AND user_id = ?")
             .bind(&params.id)
+            .bind(&self.user_id)
             .execute(&self.db)
             .await
             .map_err(|e| McpError::internal_error(e.to_string(), None))?
@@ -163,8 +168,9 @@ impl Portfolio {
         &self,
         Parameters(params): Parameters<TaskIdParams>,
     ) -> Result<CallToolResult, McpError> {
-        let rows = sqlx::query("DELETE FROM tasks WHERE id = ?")
+        let rows = sqlx::query("DELETE FROM tasks WHERE id = ? AND user_id = ?")
             .bind(&params.id)
+            .bind(&self.user_id)
             .execute(&self.db)
             .await
             .map_err(|e| McpError::internal_error(e.to_string(), None))?
@@ -181,9 +187,10 @@ impl Portfolio {
         Parameters(params): Parameters<TaskIdParams>,
     ) -> Result<CallToolResult, McpError> {
         let completed = Timestamp::now().as_millisecond();
-        let rows = sqlx::query("UPDATE tasks SET completed = ? WHERE id = ?")
+        let rows = sqlx::query("UPDATE tasks SET completed = ? WHERE id = ? AND user_id = ?")
             .bind(completed)
             .bind(&params.id)
+            .bind(&self.user_id)
             .execute(&self.db)
             .await
             .map_err(|e| McpError::internal_error(e.to_string(), None))?
@@ -215,8 +222,8 @@ impl Portfolio {
         let objective = params.objective.unwrap_or(task.objective);
 
         sqlx::query(
-            "INSERT OR REPLACE INTO tasks (id, created, completed, deadline, priority, title, context, tags, objective)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT OR REPLACE INTO tasks (id, created, completed, deadline, priority, title, context, tags, objective, user_id)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         )
         .bind(&task.id)
         .bind(task.created.as_millisecond())
@@ -227,6 +234,7 @@ impl Portfolio {
         .bind(&context)
         .bind(&tags)
         .bind(&objective)
+        .bind(&self.user_id)
         .execute(&self.db)
         .await
         .map_err(|e| McpError::internal_error(e.to_string(), None))?;
@@ -252,12 +260,13 @@ impl Portfolio {
         let priority = params.priority.unwrap_or(obj.priority);
 
         sqlx::query(
-            "INSERT OR REPLACE INTO objectives (id, title, context, priority) VALUES (?, ?, ?, ?)",
+            "INSERT OR REPLACE INTO objectives (id, title, context, priority, user_id) VALUES (?, ?, ?, ?, ?)",
         )
         .bind(&obj.id)
         .bind(&title)
         .bind(&context)
         .bind(priority)
+        .bind(&self.user_id)
         .execute(&self.db)
         .await
         .map_err(|e| McpError::internal_error(e.to_string(), None))?;

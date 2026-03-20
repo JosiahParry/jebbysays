@@ -1,0 +1,2 @@
+ALTER TABLE objectives ADD COLUMN user_id TEXT NOT NULL DEFAULT 'local';
+ALTER TABLE tasks ADD COLUMN user_id TEXT NOT NULL DEFAULT 'local';

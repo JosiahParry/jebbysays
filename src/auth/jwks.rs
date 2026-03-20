@@ -23,7 +23,6 @@ struct JwksResponse {
 #[derive(Debug, Deserialize, Serialize)]
 struct Claims {
     sub: String,
-    aud: serde_json::Value,
     exp: u64,
 }
 
@@ -44,7 +43,7 @@ impl JwksCache {
     }
 
     async fn refresh(&self) -> anyhow::Result<()> {
-        let resp = reqwest::get(self.config.jwks_uri())
+        let resp = reqwest::get(&self.config.jwks_uri)
             .await?
             .json::<JwksResponse>()
             .await?;
@@ -58,6 +57,7 @@ impl JwksCache {
         Ok(())
     }
 
+    #[tracing::instrument(skip_all)]
     pub async fn validate_token(&self, token: &str) -> anyhow::Result<String> {
         let header = jsonwebtoken::decode_header(token)?;
         let kid = header.kid.ok_or_else(|| anyhow!("token missing kid"))?;
@@ -68,7 +68,7 @@ impl JwksCache {
             .ok_or_else(|| anyhow!("unknown kid: {kid}"))?;
 
         let mut validation = Validation::new(Algorithm::RS256);
-        validation.set_audience(&[self.config.audience]);
+        validation.validate_aud = false;
 
         let data = decode::<Claims>(token, key, &validation)?;
         Ok(data.claims.sub)

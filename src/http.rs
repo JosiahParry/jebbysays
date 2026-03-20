@@ -23,6 +23,7 @@ pub(crate) struct McpState {
     pub(crate) oauth: Arc<crate::auth::OAuthConfig>,
 }
 
+#[tracing::instrument(skip_all, fields(user_id = %user_id, method = %request.method(), uri = %request.uri()))]
 pub(crate) async fn mcp_handler(
     State(state): State<Arc<McpState>>,
     Extension(user_id): Extension<String>,

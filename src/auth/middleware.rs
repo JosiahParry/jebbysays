@@ -1,5 +1,4 @@
-use std::sync::Arc;
-
+use super::jwks::JwksCache;
 use axum::{
     body::Body,
     extract::State,
@@ -7,9 +6,9 @@ use axum::{
     middleware::Next,
     response::Response,
 };
+use std::sync::Arc;
 
-use super::jwks::JwksCache;
-
+#[tracing::instrument(skip_all, fields(method = %request.method(), uri = %request.uri()))]
 pub async fn auth_middleware(
     State(jwks): State<Arc<JwksCache>>,
     mut request: Request<Body>,

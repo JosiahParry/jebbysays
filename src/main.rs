@@ -28,11 +28,10 @@ use http::McpState;
 async fn oauth_authorization_server(
     axum::extract::State(state): axum::extract::State<Arc<McpState>>,
 ) -> Json<serde_json::Value> {
-    let issuer = state.oauth.issuer.trim_end_matches('/');
     Json(json!({
-        "issuer": issuer,
-        "authorization_endpoint": format!("{issuer}/authorize"),
-        "token_endpoint": format!("{issuer}/oauth/token"),
+        "issuer": state.oauth.issuer,
+        "authorization_endpoint": state.oauth.authorization_endpoint,
+        "token_endpoint": state.oauth.token_endpoint,
         "response_types_supported": ["code"],
         "code_challenge_methods_supported": ["S256"],
     }))
@@ -88,7 +87,7 @@ fn resolve_path(path: Option<PathBuf>) -> anyhow::Result<PathBuf> {
 async fn main() -> anyhow::Result<()> {
     let sub = tracing_subscriber::registry().with(
         tracing_subscriber::EnvFilter::try_from_default_env()
-            .unwrap_or_else(|_| "debug".to_string().into()),
+            .unwrap_or_else(|_| "debug,h2=off".to_string().into()),
     );
 
     let cli = Cli::parse();
@@ -97,10 +96,15 @@ async fn main() -> anyhow::Result<()> {
 
     match cli.command {
         Command::Serve { port } => {
-            sub.with(tracing_subscriber::fmt::layer()).init();
+            sub.with(
+                tracing_subscriber::fmt::layer()
+                    .pretty()
+                    .with_line_number(true),
+            )
+            .init();
 
             let ct = CancellationToken::new();
-            let oauth = Arc::new(OAuthConfig::from_env());
+            let oauth = Arc::new(OAuthConfig::from_env().await?);
             let jwks = Arc::new(JwksCache::new(oauth.clone()).await?);
             let state = Arc::new(McpState {
                 db: portfolio.db,

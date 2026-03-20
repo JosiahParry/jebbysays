@@ -20,6 +20,7 @@ pub(crate) struct Portfolio {
 }
 
 impl Portfolio {
+    #[tracing::instrument(skip_all, fields(user_id = %self.user_id, id))]
     pub async fn get_task(&self, id: &str) -> Result<Task> {
         let row = sqlx::query_as!(
             TaskRow,
@@ -32,6 +33,7 @@ impl Portfolio {
         Ok(row.into())
     }
 
+    #[tracing::instrument(skip_all, fields(user_id = %self.user_id))]
     pub async fn list_all_tasks(&self) -> Result<Vec<Task>> {
         let rows = sqlx::query_as!(
             TaskRow,
@@ -43,6 +45,7 @@ impl Portfolio {
         Ok(rows.into_iter().map(Into::into).collect())
     }
 
+    #[tracing::instrument(skip_all, fields(user_id = %self.user_id))]
     pub async fn list_incomplete_tasks(&self) -> Result<Vec<Task>> {
         let rows = sqlx::query_as!(
             TaskRow,
@@ -54,6 +57,7 @@ impl Portfolio {
         Ok(rows.into_iter().map(Into::into).collect())
     }
 
+    #[tracing::instrument(skip_all, fields(user_id = %self.user_id))]
     pub async fn list_completed_tasks(&self) -> Result<Vec<Task>> {
         let rows = sqlx::query_as!(
             TaskRow,
@@ -65,6 +69,7 @@ impl Portfolio {
         Ok(rows.into_iter().map(Into::into).collect())
     }
 
+    #[tracing::instrument(skip_all, fields(user_id = %self.user_id, days))]
     pub async fn list_completed_tasks_since(&self, days: u32) -> Result<Vec<Task>> {
         let cutoff = jiff::Timestamp::now()
             .checked_sub(jiff::Span::new().days(days))
@@ -81,6 +86,7 @@ impl Portfolio {
         Ok(rows.into_iter().map(Into::into).collect())
     }
 
+    #[tracing::instrument(skip_all, fields(user_id = %self.user_id, id))]
     pub async fn get_objective(&self, id: &str) -> Result<Objective> {
         let obj = sqlx::query_as!(
             Objective,
@@ -93,6 +99,7 @@ impl Portfolio {
         Ok(obj)
     }
 
+    #[tracing::instrument(skip_all, fields(user_id = %self.user_id))]
     pub async fn list_objectives(&self) -> Result<Vec<Objective>> {
         let objs = sqlx::query_as!(
             Objective,

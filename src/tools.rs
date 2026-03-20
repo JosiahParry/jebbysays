@@ -86,6 +86,7 @@ impl Portfolio {
         }
     }
 
+    #[tracing::instrument(skip(self), fields(user_id = %self.user_id))]
     #[tool(description = "Create a new task")]
     async fn add_task(
         &self,
@@ -120,6 +121,7 @@ impl Portfolio {
         ))]))
     }
 
+    #[tracing::instrument(skip(self), fields(user_id = %self.user_id))]
     #[tool(description = "Create a new objective")]
     async fn add_objective(
         &self,
@@ -145,6 +147,7 @@ impl Portfolio {
         ))]))
     }
 
+    #[tracing::instrument(skip(self), fields(user_id = %self.user_id))]
     #[tool(description = "Delete an objective by ID")]
     async fn delete_objective(
         &self,
@@ -163,6 +166,7 @@ impl Portfolio {
         ))]))
     }
 
+    #[tracing::instrument(skip(self), fields(user_id = %self.user_id))]
     #[tool(description = "Delete a task by ID")]
     async fn delete_task(
         &self,
@@ -181,6 +185,7 @@ impl Portfolio {
         ))]))
     }
 
+    #[tracing::instrument(skip(self), fields(user_id = %self.user_id))]
     #[tool(description = "Mark a task as completed")]
     async fn complete_task(
         &self,
@@ -201,6 +206,7 @@ impl Portfolio {
         ))]))
     }
 
+    #[tracing::instrument(skip(self), fields(user_id = %self.user_id))]
     #[tool(description = "Modify fields of an existing task")]
     async fn modify_task(
         &self,
@@ -245,6 +251,7 @@ impl Portfolio {
         ))]))
     }
 
+    #[tracing::instrument(skip(self), fields(user_id = %self.user_id))]
     #[tool(description = "Modify fields of an existing objective")]
     async fn modify_objective(
         &self,

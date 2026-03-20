@@ -4,10 +4,11 @@ pub mod middleware;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
-struct OidcDiscovery {
+struct AuthServerMetadata {
     authorization_endpoint: String,
     token_endpoint: String,
     jwks_uri: String,
+    registration_endpoint: Option<String>,
 }
 
 pub struct OAuthConfig {
@@ -16,6 +17,7 @@ pub struct OAuthConfig {
     pub authorization_endpoint: String,
     pub token_endpoint: String,
     pub jwks_uri: String,
+    pub registration_endpoint: Option<String>,
 }
 
 impl OAuthConfig {
@@ -26,20 +28,21 @@ impl OAuthConfig {
             .map_err(|_| anyhow::anyhow!("OAUTH_ISSUER must be set"))?;
 
         let discovery_url = format!(
-            "{}/.well-known/openid-configuration",
+            "{}/.well-known/oauth-authorization-server",
             issuer.trim_end_matches('/')
         );
-        let discovery = reqwest::get(&discovery_url)
+        let metadata = reqwest::get(&discovery_url)
             .await?
-            .json::<OidcDiscovery>()
+            .json::<AuthServerMetadata>()
             .await?;
 
         Ok(Self {
             audience,
             issuer,
-            authorization_endpoint: discovery.authorization_endpoint,
-            token_endpoint: discovery.token_endpoint,
-            jwks_uri: discovery.jwks_uri,
+            authorization_endpoint: metadata.authorization_endpoint,
+            token_endpoint: metadata.token_endpoint,
+            jwks_uri: metadata.jwks_uri,
+            registration_endpoint: metadata.registration_endpoint,
         })
     }
 }

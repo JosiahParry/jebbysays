@@ -24,17 +24,24 @@ use tracing_subscriber::{
 
 use auth::{OAuthConfig, jwks::JwksCache, middleware::auth_middleware};
 use http::McpState;
+use rmcp::transport::streamable_http_server::session::local::LocalSessionManager;
 
 async fn oauth_authorization_server(
     axum::extract::State(state): axum::extract::State<Arc<McpState>>,
 ) -> Json<serde_json::Value> {
-    Json(json!({
+    let mut doc = json!({
         "issuer": state.oauth.issuer,
         "authorization_endpoint": state.oauth.authorization_endpoint,
         "token_endpoint": state.oauth.token_endpoint,
         "response_types_supported": ["code"],
         "code_challenge_methods_supported": ["S256"],
-    }))
+    });
+
+    if let Some(reg) = &state.oauth.registration_endpoint {
+        doc["registration_endpoint"] = json!(reg);
+    }
+
+    Json(doc)
 }
 
 async fn oauth_protected_resource(
@@ -110,6 +117,7 @@ async fn main() -> anyhow::Result<()> {
                 db: portfolio.db,
                 ct: ct.child_token(),
                 oauth,
+                sessions: Arc::new(LocalSessionManager::default()),
             });
 
             let cors = CorsLayer::new()

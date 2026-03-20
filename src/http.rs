@@ -21,6 +21,7 @@ pub(crate) struct McpState {
     pub(crate) db: SqlitePool,
     pub(crate) ct: CancellationToken,
     pub(crate) oauth: Arc<crate::auth::OAuthConfig>,
+    pub(crate) sessions: Arc<LocalSessionManager>,
 }
 
 #[tracing::instrument(skip_all, fields(user_id = %user_id, method = %request.method(), uri = %request.uri()))]
@@ -29,10 +30,11 @@ pub(crate) async fn mcp_handler(
     Extension(user_id): Extension<String>,
     request: Request<Body>,
 ) -> Response {
+    tracing::debug!(headers = ?request.headers(), "incoming request headers");
     let portfolio = Portfolio::with_user(state.db.clone(), user_id);
     let mut service = StreamableHttpService::new(
         move || Ok(portfolio.clone()),
-        LocalSessionManager::default().into(),
+        state.sessions.clone(),
         StreamableHttpServerConfig {
             cancellation_token: state.ct.clone(),
             ..Default::default()

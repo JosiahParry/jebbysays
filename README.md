@@ -1,50 +1,67 @@
-# jebbysays
+# 👉 **[jebbysays.dev](https://jebbysays.dev)** 👩🏻‍🏫
 
 > when jebby says do a dance moves—you do a dance moves.
 
-jebbysays keeps you on track. set goals, manage tasks, ask jebby what's next. because jebby says so, and that's enough.
 
 - Do you, like me, have crippling ADHD?
 - Do you need an accountability buddy who won't let you off the hook?
 - Do you struggle to keep track of your own todo list?
 
----
+
+jebbysays keeps you on track. set goals, manage tasks, ask jebby what's next. because jebby says so, and that's enough.
 
 Inspired by my own attempt at using Claude + Notion MCP as a personal assistant. It worked exceptionally well — until it didn't. The Notion MCP server [has some challenges](https://github.com/makenotion/notion-mcp-server/issues/47#issuecomment-3739384218).
 
-👉 **[jebbysays.dev](https://jebbysays.dev)**
+## Quickstart
 
-## Options
+Want to use the hosted version of `jebbysays`?
 
-### Hosted (free)
-
-Sign up at [jebbysays.dev](https://jebbysays.dev) and point your MCP client at the hosted server. No setup required, jebby handles the rest.
+Connect via claude code or your favorite LLM.
 
 ```bash
 claude mcp add jebbysays --scope user --transport http https://jebbysays.dev/mcp
 ```
 
-### Self-host
+Sign up at [jebbysays.dev](https://jebbysays.dev) and point your MCP client at the hosted server. No setup required, jebby handles the rest.
 
-Run your own instance. Jebby Says runs as an HTTP MCP server backed by a SQLite database.
-
-```bash
-cargo install --git https://github.com/josiahparry/jebbysays
-jebbysays --path /path/to/jebbysays.sqlite3 serve
-```
-
-Then connect your MCP client to your local instance:
-
-```bash
-claude mcp add jebbysays --scope user --transport http http://localhost:24433/mcp
-```
 
 ### Run locally
 
 Prefer stdio? Jebby's got you.
 
 ```bash
-jebbysays --path /path/to/jebbysays.sqlite3 stdio
+# install
+cargo install --git https://github.com/josiahparry/jebbysays
+
+# run locally
+jebbysays stdio
+```
+
+## Self-host
+
+Run your own instance. Jebby Says runs as an HTTP MCP server backed by a SQLite database.
+
+You will need to set two environment variables to connect to your auth provider.
+
+```bash
+export MCP_SERVER_URL="http://localhost:24433"
+export OAUTH_ISSUER="https://your-auth-provider"
+```
+
+Start the http server:
+
+```bash
+jebbysays serve
+```
+
+> [!IMPORTANT]
+> When using http, you **must** have an authentication provider. 
+> Local via `stdio` doesn't use authentication.
+
+Then connect your MCP client to your local instance:
+
+```bash
+claude mcp add jebbysays --scope user --transport http http://localhost:24433/mcp
 ```
 
 ## What it does

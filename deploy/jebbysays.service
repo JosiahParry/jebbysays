@@ -6,12 +6,14 @@ After=network.target
 Type=simple
 User=jebbysays
 Group=jebbysays
-ExecStart=/var/lib/jebbysays/jebbysays serve
+ExecStart=/var/lib/jebbysays/jebbysays serve --path /var/lib/jebbysays/jebbysays.sqlite3
 WorkingDirectory=/var/lib/jebbysays
 Environment="MCP_SERVER_URL=https://jebbysays.dev"
 Environment="OAUTH_ISSUER=https://clerk.jebbysays.dev/"
 Restart=on-failure
 RestartSec=5
+StandardOutput=append:/var/log/jebbysays/jebbysays.log
+StandardError=append:/var/log/jebbysays/jebbysays.log
 
 [Install]
 WantedBy=multi-user.target

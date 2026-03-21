@@ -1,48 +1,61 @@
-# Jebby Says - your personal Chief of Staff
+# jebbysays
 
-> "Don't sweat the small stuff"
+> when jebby says do a dance moves—you do a dance moves.
 
-`jebbysays` is your very own personal chief of staff designed to keep track of all of your 💩.
+jebbysays keeps you on track. set goals, manage tasks, ask jebby what's next. because jebby says so, and that's enough.
 
 - Do you, like me, have crippling ADHD?
-- Do you need an accountability buddy?
+- Do you need an accountability buddy who won't let you off the hook?
 - Do you struggle to keep track of your own todo list?
 
-Just talk to your CoS and they'll help you prioritize, shift focus, or triage urgent tasks as they arise.
+---
 
 Inspired by my own attempt at using Claude + Notion MCP as a personal assistant. It worked exceptionally well — until it didn't. The Notion MCP server [has some challenges](https://github.com/makenotion/notion-mcp-server/issues/47#issuecomment-3739384218).
 
-## Installation
+👉 **[jebbysays.dev](https://jebbysays.dev)**
+
+## Options
+
+### Hosted (free)
+
+Sign up at [jebbysays.dev](https://jebbysays.dev) and point your MCP client at the hosted server. No setup required, jebby handles the rest.
+
+```bash
+claude mcp add jebbysays --scope user --transport http https://jebbysays.dev/mcp
+```
+
+### Self-host
+
+Run your own instance. Jebby Says runs as an HTTP MCP server backed by a SQLite database.
 
 ```bash
 cargo install --git https://github.com/josiahparry/jebbysays
+jebbysays --path /path/to/jebbysays.sqlite3 serve
 ```
 
-## Getting started
-
-Jebby Says 👩🏻‍🏫 runs as a local HTTP server backed by a SQLite database.
-
-```bash
-jebbysays
-```
-
-By default the database lives at `~/.local/share/jebbysays/todo.sqlite3`. Override with the `CHIEF_PATH` environment variable.
-
-### Connect via Claude Code
-
-Create an MCP connection for your user. 
+Then connect your MCP client to your local instance:
 
 ```bash
 claude mcp add jebbysays --scope user --transport http http://localhost:24433/mcp
 ```
 
+### Run locally
+
+Prefer stdio? Jebby's got you.
+
+```bash
+jebbysays --path /path/to/jebbysays.sqlite3 stdio
+```
+
 ## What it does
 
-Chief gives your AI a structured view of your work through two concepts:
+jebbysays gives your LLM a structured view of your work through two concepts:
 
-**Objectives** — the goals and projects that matter to you. Each has a priority so your AI knows what to focus on.
+**Objectives** — your goals, written in plain language. Give them a title, as much context as you want, and a priority from 1 to 5. Jebby will remember every word.
 
-**Tasks** — the concrete work that moves your objectives forward. Tasks have priorities, deadlines, tags, and belong to an objective.
+**Tasks** — the concrete work that moves your objectives forward. Tasks have priorities, deadlines, tags, and context, and belong to an objective.
+
+Talk to jebby and ask for your daily briefing, run a weekly retro, or just ask "what should I focus on?" It will. get. done.
 
 ## Resources
 
@@ -66,3 +79,12 @@ Chief gives your AI a structured view of your work through two concepts:
 | `add_objective` | Create a new objective |
 | `modify_objective` | Update an objective |
 | `delete_objective` | Delete an objective |
+
+
+## Who's jebby?
+
+Jebby is my wife's nickname. We both have crippling ADHD. But she has this superpower: she is unbelievably organized, detail-oriented, and when she sets her mind to something? It will get done!
+
+So when jebby says "do a dance move"—you do a dance move. You will be better for it.
+
+We also have two cats. **Juice** is tuxedo cat with a red collar. **Beanie** (government name: Onion) is a tortie with one paw the color of peanut butter. They both supervised the building of this app and have strong opinions.

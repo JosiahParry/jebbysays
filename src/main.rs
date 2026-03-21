@@ -9,7 +9,7 @@ pub mod types;
 use std::{path::PathBuf, sync::Arc};
 
 use anyhow::anyhow;
-use axum::{Json, Router, middleware, routing::get};
+use axum::{Json, Router, middleware, response::Html, routing::get};
 use clap::{Parser, Subcommand};
 use portfolio::Portfolio;
 use rmcp::{ServiceExt, transport::stdio};
@@ -25,6 +25,10 @@ use tracing_subscriber::{
 use auth::{OAuthConfig, jwks::JwksCache, middleware::auth_middleware};
 use http::McpState;
 use rmcp::transport::streamable_http_server::session::local::LocalSessionManager;
+
+async fn landing() -> Html<&'static str> {
+    Html(include_str!("../index.html"))
+}
 
 async fn oauth_authorization_server(
     axum::extract::State(state): axum::extract::State<Arc<McpState>>,
@@ -129,6 +133,7 @@ async fn main() -> anyhow::Result<()> {
                 .route("/mcp", axum::routing::any(http::mcp_handler))
                 .route_layer(middleware::from_fn_with_state(jwks, auth_middleware))
                 .with_state(state.clone())
+                .route("/", get(landing))
                 .route(
                     "/.well-known/oauth-authorization-server",
                     get(oauth_authorization_server),

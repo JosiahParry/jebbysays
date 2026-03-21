@@ -1,8 +1,8 @@
-# Chief - your personal Chief of Staff
+# Jebby Says - your personal Chief of Staff
 
 > "Don't sweat the small stuff"
 
-`chief` is your very own personal chief of staff designed to keep track of all of your 💩.
+`jebbysays` is your very own personal chief of staff designed to keep track of all of your 💩.
 
 - Do you, like me, have crippling ADHD?
 - Do you need an accountability buddy?
@@ -15,25 +15,25 @@ Inspired by my own attempt at using Claude + Notion MCP as a personal assistant.
 ## Installation
 
 ```bash
-cargo install --git https://github.com/josiahparry/chief
+cargo install --git https://github.com/josiahparry/jebbysays
 ```
 
 ## Getting started
 
-Chief runs as a local HTTP server backed by a SQLite database.
+Jebby Says 👩🏻‍🏫 runs as a local HTTP server backed by a SQLite database.
 
 ```bash
-chief
+jebbysays
 ```
 
-By default the database lives at `~/.local/share/chief/todo.sqlite3`. Override with the `CHIEF_PATH` environment variable.
+By default the database lives at `~/.local/share/jebbysays/todo.sqlite3`. Override with the `CHIEF_PATH` environment variable.
 
 ### Connect via Claude Code
 
 Create an MCP connection for your user. 
 
 ```bash
-claude mcp add chief --scope user --transport http http://localhost:24433/mcp
+claude mcp add jebbysays --scope user --transport http http://localhost:24433/mcp
 ```
 
 ## What it does

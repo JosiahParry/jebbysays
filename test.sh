@@ -36,7 +36,7 @@ call '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"add_object
 
 echo ""
 echo "Add task"
-call '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"add_task","arguments":{"title":"Write tests","context":"Write unit tests for chief","priority":4,"tags":["rust","testing"]}}}'
+call '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"add_task","arguments":{"title":"Write tests","context":"Write unit tests for jebbysays","priority":4,"tags":["rust","testing"]}}}'
 
 echo ""
 echo "List incomplete tasks"

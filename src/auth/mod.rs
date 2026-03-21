@@ -22,7 +22,7 @@ pub struct OAuthConfig {
 
 impl OAuthConfig {
     pub async fn from_env() -> anyhow::Result<Self> {
-        let audience = std::env::var("OAUTH_AUDIENCE")
+        let audience = std::env::var("MCP_SERVER_URL")
             .map_err(|_| anyhow::anyhow!("OAUTH_AUDIENCE must be set"))?;
         let issuer = std::env::var("OAUTH_ISSUER")
             .map_err(|_| anyhow::anyhow!("OAUTH_ISSUER must be set"))?;

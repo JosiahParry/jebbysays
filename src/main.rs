@@ -54,7 +54,7 @@ async fn oauth_protected_resource(
 }
 
 #[derive(Parser)]
-#[command(name = "chief", about = "Your personal chief of staff")]
+#[command(name = "jebbysays", about = "Your personal chief of staff")]
 struct Cli {
     /// Path to the SQLite database
     #[arg(long, global = true)]
@@ -82,7 +82,7 @@ fn resolve_path(path: Option<PathBuf>) -> anyhow::Result<PathBuf> {
     }
 
     dirs::data_dir()
-        .map(|h| h.join("chief").join("chief.sqlite3"))
+        .map(|h| h.join("jebbysays").join("jebbysays.sqlite3"))
         .ok_or_else(|| {
             anyhow!(
                 "Could not determine data directory. Use --path to specify the database location."

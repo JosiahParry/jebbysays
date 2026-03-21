@@ -125,7 +125,7 @@ impl ServerHandler for Portfolio {
         )
         .with_server_info(Implementation::from_build_env())
         .with_instructions(
-            "Chief is your personal chief of staff. Manage tasks and objectives via tools and resources.".to_string()
+            "Jebby Says is your personal chief of staff. Manage tasks and objectives via tools and resources.".to_string()
         )
     }
 

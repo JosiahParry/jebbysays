@@ -1,0 +1,17 @@
+[Unit]
+Description=jebbysays MCP server
+After=network.target
+
+[Service]
+Type=simple
+User=jebbysays
+Group=jebbysays
+ExecStart=/var/lib/jebbysays/jebbysays serve
+WorkingDirectory=/var/lib/jebbysays
+Environment="MCP_SERVER_URL=https://jebbysays.dev"
+Environment="OAUTH_ISSUER=https://clerk.jebbysays.dev/"
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

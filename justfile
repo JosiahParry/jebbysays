@@ -13,6 +13,7 @@ serve:
 install:
     cargo build --release
     install -Dm755 target/release/jebbysays /var/lib/jebbysays/jebbysays
+    cp -r imgs /var/lib/jebbysays/imgs
     chown -R jebbysays:jebbysays /var/lib/jebbysays
     mkdir -p /var/log/jebbysays
     chown jebbysays:jebbysays /var/log/jebbysays
@@ -21,7 +22,7 @@ install:
     systemctl restart jebbysays
 
 deploy:
-    ssh -i ~/.ssh/jebbysays root@$SERVER_IP 'cd /root/github/jebbysays && git switch main && git pull && just install'
+    ssh -i ~/.ssh/jebbysays root@$SERVER_IP 'source ~/.cargo/env && cd /root/github/jebbysays && git switch main && git pull && just install'
 
 new-migration name:
     cargo sqlx migrate add -r {{name}}

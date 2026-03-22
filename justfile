@@ -11,6 +11,7 @@ serve:
     cargo run -- serve
 
 install:
+    cargo sqlx migrate run
     cargo build --release
     install -Dm755 target/release/jebbysays /var/lib/jebbysays/jebbysays
     cp -r imgs /var/lib/jebbysays/imgs

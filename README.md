@@ -27,43 +27,29 @@ claude mcp add jebbysays \
 
 Open Claude Code with `claude`, type `/mcp`, find jebby says, and hit authenticate.
 
----
-
 ### set up your goals
+
+Jebby organizes your life around objectives and priorities. Ask jebby for help getting started with this prompt:
+
+> I'd like jebby's help getting organized! can you help me create some objectives? for each one, ask me for a title, any additional context that would help my LLM understand the goal, and a priority between 1 and 5.
 
 <img src="imgs/jebby-prompt1.png" alt="setting up objectives with jebby in Claude Code" width="400" />
 
-> jebby walking through your first objective
-
-```
-I'd like jebby's help getting organized! can you help me create some objectives?
-for each one, ask me for a title, any additional context that would help my LLM
-understand the goal, and a priority between 1 and 5.
-```
-
 ### manage your tasks
+
+Jebby can help you break your objectives down into tasks. Tell jebby what you need to get done:
+
+> I have three objectives: launch jebbysays.dev, improve my health, and learn Rust async. can you help me create tasks for each? set deadlines, priorities, and tags where they make sense.
 
 <img src="imgs/jebby-prompt2.png" alt="jebby breaking objectives into tasks in Claude Code" width="400" />
 
-> 9 tasks created across 3 objectives, just like that
-
-```
-can you help me break my objectives down into tasks? for each task, let's set a
-deadline, priority, any relevant context, and tags if they make sense.
-```
-
 ### check in with jebby
 
+Jebby helps you prioritize so you can get sh!t done. Ask jebby what's next:
+
+> can you ask jebby what I need to get done today? give me a briefing based on my priorities and any upcoming deadlines.
+
 <img src="imgs/jebby-prompt3.png" alt="jebby's daily briefing in Claude Code" width="400" />
-
-> your daily briefing, ready before your first coffee
-
-```
-can you ask jebby what I need to get done today? give me a briefing based on
-my priorities and any upcoming deadlines.
-```
-
----
 
 ## run locally
 

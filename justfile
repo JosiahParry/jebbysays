@@ -20,5 +20,8 @@ install:
     systemctl daemon-reload
     systemctl restart jebbysays
 
+deploy:
+    ssh -i ~/.ssh/jebbysays root@$SERVER_IP 'cd /root/github/jebbysays && git switch main && git pull && just install'
+
 new-migration name:
     cargo sqlx migrate add -r {{name}}

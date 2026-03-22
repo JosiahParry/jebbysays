@@ -99,7 +99,7 @@ fn resolve_path(path: Option<PathBuf>) -> anyhow::Result<PathBuf> {
 async fn main() -> anyhow::Result<()> {
     let sub = tracing_subscriber::registry().with(
         tracing_subscriber::EnvFilter::try_from_default_env()
-            .unwrap_or_else(|_| "debug,h2=off".to_string().into()),
+            .unwrap_or_else(|_| "debug,h2=off,hyper_util=off".to_string().into()),
     );
 
     let cli = Cli::parse();

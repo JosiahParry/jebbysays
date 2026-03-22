@@ -43,6 +43,9 @@ impl Portfolio {
                 "Give me my morning briefing. Read `tasks://incomplete` and `objectives://all`. \
                  Group incomplete tasks by objective, ordered by priority (highest first). \
                  For each objective show its priority and list its tasks with deadlines if set. \
+                 If a task has a depends_on field, check whether that dependency is still incomplete. \
+                 Tasks with incomplete dependencies are blocked and should be marked as such. \
+                 Tasks that other tasks depend on should be treated as higher priority, as completing them unblocks downstream work. \
                  Be concise. {objective_instruction}"
             ),
         )];
@@ -60,7 +63,9 @@ impl Portfolio {
             PromptMessageRole::User,
             "Help me triage my tasks. Read `tasks://incomplete` and `objectives://all`. \
              Identify what is most urgent based on priority and deadlines. \
-             Suggest what to focus on now, what can wait, and flag anything overdue. \
+             If a task has a depends_on field, check whether that dependency is still incomplete; if so, the task is blocked and should not be suggested as actionable. \
+             Tasks that other tasks depend on should be treated as higher priority, as completing them unblocks downstream work. \
+             Suggest what to focus on now, what can wait, flag anything overdue, and list any blocked tasks separately. \
              Be direct and actionable.",
         )];
 

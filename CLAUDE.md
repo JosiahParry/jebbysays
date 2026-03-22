@@ -68,3 +68,4 @@ Do not use `===` for comments.
 ## General Development
 
 - Make use of justfile rules.
+- To create a new migration, use `just new-migration <name>`. This runs `cargo sqlx migrate add -r <name>` and creates both up and down files in `migrations/`.

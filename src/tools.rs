@@ -44,6 +44,10 @@ pub struct AddTaskParams {
     pub priority: Option<i64>,
     pub tags: Option<Vec<String>>,
     pub objective: Option<String>,
+    #[schemars(
+        description = "ID of a task that must be completed before this one can start. Tasks that are depended upon by others should be given higher priority, as completing them unblocks downstream work."
+    )]
+    pub depends_on: Option<String>,
 }
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
@@ -55,6 +59,10 @@ pub struct ModifyTaskParams {
     pub priority: Option<i64>,
     pub tags: Option<Vec<String>>,
     pub objective: Option<String>,
+    #[schemars(
+        description = "ID of a task that must be completed before this one can start. Tasks that are depended upon by others should be given higher priority, as completing them unblocks downstream work."
+    )]
+    pub depends_on: Option<String>,
 }
 
 #[tool_router]
@@ -87,7 +95,9 @@ impl Portfolio {
     }
 
     #[tracing::instrument(skip(self), fields(user_id = %self.user_id))]
-    #[tool(description = "Create a new task")]
+    #[tool(
+        description = "Create a new task. Use depends_on to link a task to a prerequisite; tasks that are depended upon by others should be given higher priority, as completing them unblocks downstream work."
+    )]
     async fn add_task(
         &self,
         Parameters(params): Parameters<AddTaskParams>,
@@ -100,8 +110,8 @@ impl Portfolio {
         let deadline = params.deadline.map(|t| t.as_millisecond());
 
         sqlx::query(
-            "INSERT INTO tasks (id, created, deadline, priority, title, context, tags, objective, user_id)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO tasks (id, created, deadline, priority, title, context, tags, objective, user_id, depends_on)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         )
         .bind(&id)
         .bind(created)
@@ -112,6 +122,7 @@ impl Portfolio {
         .bind(&tags)
         .bind(&objective)
         .bind(&self.user_id)
+        .bind(&params.depends_on)
         .execute(&self.db)
         .await
         .map_err(|e| McpError::internal_error(e.to_string(), None))?;
@@ -207,7 +218,9 @@ impl Portfolio {
     }
 
     #[tracing::instrument(skip(self), fields(user_id = %self.user_id))]
-    #[tool(description = "Modify fields of an existing task")]
+    #[tool(
+        description = "Modify fields of an existing task. Use depends_on to link a task to a prerequisite; tasks that are depended upon by others should be given higher priority, as completing them unblocks downstream work."
+    )]
     async fn modify_task(
         &self,
         Parameters(params): Parameters<ModifyTaskParams>,
@@ -226,10 +239,11 @@ impl Portfolio {
         let priority = params.priority.unwrap_or(task.priority);
         let tags = params.tags.or(task.tags).map(Json);
         let objective = params.objective.unwrap_or(task.objective);
+        let depends_on = params.depends_on.or(task.depends_on);
 
         sqlx::query(
-            "INSERT OR REPLACE INTO tasks (id, created, completed, deadline, priority, title, context, tags, objective, user_id)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT OR REPLACE INTO tasks (id, created, completed, deadline, priority, title, context, tags, objective, user_id, depends_on)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         )
         .bind(&task.id)
         .bind(task.created.as_millisecond())
@@ -241,6 +255,7 @@ impl Portfolio {
         .bind(&tags)
         .bind(&objective)
         .bind(&self.user_id)
+        .bind(&depends_on)
         .execute(&self.db)
         .await
         .map_err(|e| McpError::internal_error(e.to_string(), None))?;

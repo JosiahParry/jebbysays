@@ -14,6 +14,7 @@ pub struct TaskRow {
     pub tags: Option<Json<Vec<String>>>,
     pub objective: String,
     pub user_id: String,
+    pub depends_on: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
@@ -28,6 +29,7 @@ pub struct Task {
     pub tags: Option<Vec<String>>,
     pub objective: String,
     pub user_id: String,
+    pub depends_on: Option<String>,
 }
 
 impl From<TaskRow> for Task {
@@ -48,6 +50,7 @@ impl From<TaskRow> for Task {
             tags,
             objective: row.objective,
             user_id: row.user_id,
+            depends_on: row.depends_on,
         }
     }
 }

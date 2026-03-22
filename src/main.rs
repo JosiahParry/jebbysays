@@ -16,6 +16,7 @@ use rmcp::{ServiceExt, transport::stdio};
 use serde_json::json;
 use tokio_util::sync::CancellationToken;
 use tower_http::cors::{Any, CorsLayer};
+use tower_http::services::ServeDir;
 use tracing_subscriber::{
     layer::SubscriberExt,
     util::SubscriberInitExt,
@@ -134,6 +135,7 @@ async fn main() -> anyhow::Result<()> {
                 .route_layer(middleware::from_fn_with_state(jwks, auth_middleware))
                 .with_state(state.clone())
                 .route("/", get(landing))
+                .nest_service("/imgs", ServeDir::new("imgs"))
                 .route(
                     "/.well-known/oauth-authorization-server",
                     get(oauth_authorization_server),

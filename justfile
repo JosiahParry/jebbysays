@@ -23,7 +23,7 @@ install:
     systemctl restart jebbysays
 
 deploy:
-    ssh -i ~/.ssh/jebbysays root@$SERVER_IP 'source ~/.cargo/env && cd /root/github/jebbysays && git switch main && git pull && just install'
+    ssh -i ~/.ssh/jebbysays root@$SERVER_IP 'source ~/.cargo/env && cd /root/github/jebbysays && git switch main && git stash && git pull && just install'
 
 hooks:
     echo 'git sv vcm $1' > .git/hooks/prepare-commit-msg

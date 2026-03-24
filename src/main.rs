@@ -120,12 +120,11 @@ async fn main() -> anyhow::Result<()> {
             )
             .init();
 
-            let conf = get_configuration(Some("Cargo.toml"))?;
             let leptos_options = LeptosOptions::builder()
                 .output_name("jebbysays")
                 .site_addr(format!("127.0.0.1:{port}").parse::<SocketAddr>()?)
-                .site_root(conf.leptos_options.site_root)
-                .site_pkg_dir(conf.leptos_options.site_pkg_dir)
+                .site_root("site")
+                .site_pkg_dir("pkg")
                 .build();
 
             let routes = generate_route_list(App);

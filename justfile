@@ -27,3 +27,12 @@ deploy:
 
 new-migration name:
     cargo sqlx migrate add -r {{name}}
+
+bump:
+    #!/usr/bin/env bash
+    version=$(git sv nv)
+    cargo set-version $version
+    git add Cargo.toml Cargo.lock
+    git commit -m "chore: bump version to $version"
+    git sv tag
+    git push && git push --tags

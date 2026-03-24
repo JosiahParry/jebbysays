@@ -87,6 +87,45 @@ impl Portfolio {
     }
 
     #[tracing::instrument(skip_all, fields(user_id = %self.user_id, id))]
+    pub async fn list_tasks_by_objective(&self, id: &str) -> Result<Vec<Task>> {
+        let rows = sqlx::query_as!(
+            TaskRow,
+            "SELECT id as \"id!\", created as \"created!\", completed, deadline, priority as \"priority!\", title as \"title!\", context, tags as \"tags: _\", objective as \"objective!\", user_id as \"user_id!\", depends_on FROM tasks WHERE objective = ? AND user_id = ?",
+            id,
+            self.user_id
+        )
+        .fetch_all(&self.db)
+        .await?;
+        Ok(rows.into_iter().map(Into::into).collect())
+    }
+
+    #[tracing::instrument(skip_all, fields(user_id = %self.user_id, id))]
+    pub async fn list_incomplete_tasks_by_objective(&self, id: &str) -> Result<Vec<Task>> {
+        let rows = sqlx::query_as!(
+            TaskRow,
+            "SELECT id as \"id!\", created as \"created!\", completed, deadline, priority as \"priority!\", title as \"title!\", context, tags as \"tags: _\", objective as \"objective!\", user_id as \"user_id!\", depends_on FROM tasks WHERE objective = ? AND completed IS NULL AND user_id = ?",
+            id,
+            self.user_id
+        )
+        .fetch_all(&self.db)
+        .await?;
+        Ok(rows.into_iter().map(Into::into).collect())
+    }
+
+    #[tracing::instrument(skip_all, fields(user_id = %self.user_id, id))]
+    pub async fn list_completed_tasks_by_objective(&self, id: &str) -> Result<Vec<Task>> {
+        let rows = sqlx::query_as!(
+            TaskRow,
+            "SELECT id as \"id!\", created as \"created!\", completed, deadline, priority as \"priority!\", title as \"title!\", context, tags as \"tags: _\", objective as \"objective!\", user_id as \"user_id!\", depends_on FROM tasks WHERE objective = ? AND completed IS NOT NULL AND user_id = ?",
+            id,
+            self.user_id
+        )
+        .fetch_all(&self.db)
+        .await?;
+        Ok(rows.into_iter().map(Into::into).collect())
+    }
+
+    #[tracing::instrument(skip_all, fields(user_id = %self.user_id, id))]
     pub async fn get_objective(&self, id: &str) -> Result<Objective> {
         let obj = sqlx::query_as!(
             Objective,

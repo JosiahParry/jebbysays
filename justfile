@@ -12,9 +12,9 @@ serve:
 
 install:
     cargo sqlx migrate run
-    cargo build --release
+    cargo leptos build --release -P
     install -Dm755 target/release/jebbysays /var/lib/jebbysays/jebbysays
-    cp -r imgs /var/lib/jebbysays/imgs
+    cp -r target/site /var/lib/jebbysays/site
     chown -R jebbysays:jebbysays /var/lib/jebbysays
     mkdir -p /var/log/jebbysays
     chown jebbysays:jebbysays /var/log/jebbysays

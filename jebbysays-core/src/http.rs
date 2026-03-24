@@ -17,17 +17,27 @@ use tower::Service;
 use crate::portfolio::Portfolio;
 
 #[derive(Clone)]
-pub(crate) struct McpState {
-    pub(crate) db: SqlitePool,
-    pub(crate) ct: CancellationToken,
-    pub(crate) oauth: Arc<crate::auth::OAuthConfig>,
-    pub(crate) sessions: Arc<LocalSessionManager>,
+pub struct McpState {
+    pub db: SqlitePool,
+    pub ct: CancellationToken,
+    pub oauth: Arc<crate::auth::OAuthConfig>,
+    pub sessions: Arc<LocalSessionManager>,
 }
 
 #[tracing::instrument(skip_all, fields(user_id = %user_id, method = %request.method(), uri = %request.uri()))]
-pub(crate) async fn mcp_handler(
+pub async fn mcp_handler(
     State(state): State<Arc<McpState>>,
     Extension(user_id): Extension<String>,
+    request: Request<Body>,
+) -> Response {
+    mcp_handler_inner(state, user_id, request).await
+}
+
+/// Inner handler that can be called directly with McpState
+#[tracing::instrument(skip_all, fields(user_id = %user_id, method = %request.method(), uri = %request.uri()))]
+pub async fn mcp_handler_inner(
+    state: Arc<McpState>,
+    user_id: String,
     request: Request<Body>,
 ) -> Response {
     tracing::debug!(headers = ?request.headers(), "incoming request headers");

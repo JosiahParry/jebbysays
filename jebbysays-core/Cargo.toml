@@ -1,0 +1,45 @@
+[package]
+name = "jebbysays-core"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+ssr = [
+  "dep:axum",
+  "dep:dirs",
+  "dep:jsonwebtoken",
+  "dep:reqwest",
+  "dep:rmcp",
+  "dep:schemars",
+  "dep:sqlx",
+  "dep:tokio",
+  "dep:tokio-util",
+  "dep:tower",
+  "dep:tower-http",
+  "dep:tower-sessions",
+  "dep:oauth2",
+  "dep:ulid",
+]
+
+[dependencies]
+anyhow = { workspace = true }
+jiff = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tracing = { workspace = true }
+
+# SSR-only deps
+axum = { workspace = true, optional = true }
+dirs = { workspace = true, optional = true }
+jsonwebtoken = { workspace = true, optional = true }
+reqwest = { workspace = true, optional = true }
+rmcp = { workspace = true, optional = true }
+schemars = { workspace = true, optional = true }
+sqlx = { workspace = true, features = ["json", "macros", "runtime-tokio", "sqlite"], optional = true }
+tokio = { workspace = true, optional = true }
+tokio-util = { workspace = true, optional = true }
+tower = { workspace = true, optional = true }
+tower-http = { workspace = true, optional = true }
+tower-sessions = { workspace = true, optional = true }
+oauth2 = { workspace = true, optional = true }
+ulid = { workspace = true, features = ["serde"], optional = true }

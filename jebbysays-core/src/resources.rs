@@ -5,7 +5,7 @@ use crate::portfolio::Portfolio;
 
 impl Portfolio {
     #[tracing::instrument(skip_all, fields(user_id = %self.user_id))]
-    pub(crate) async fn handle_list_resources(
+    pub async fn handle_list_resources(
         &self,
         _request: Option<PaginatedRequestParams>,
         _ctx: RequestContext<RoleServer>,
@@ -23,7 +23,7 @@ impl Portfolio {
     }
 
     #[tracing::instrument(skip_all, fields(user_id = %self.user_id))]
-    pub(crate) async fn handle_list_resource_templates(
+    pub async fn handle_list_resource_templates(
         &self,
         _request: Option<PaginatedRequestParams>,
         _ctx: RequestContext<RoleServer>,
@@ -47,7 +47,7 @@ impl Portfolio {
     }
 
     #[tracing::instrument(skip_all, fields(user_id = %self.user_id, uri = %request.uri))]
-    pub(crate) async fn handle_read_resource(
+    pub async fn handle_read_resource(
         &self,
         request: ReadResourceRequestParams,
         _ctx: RequestContext<RoleServer>,

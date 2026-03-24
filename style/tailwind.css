@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+/* Content sources for class detection */
+@source "../src/**/*.rs";
+@source "../*.html";
+@source "../public/**/*.html";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-cream: #fdf6ec;
+  --color-amber: #d97706;
+  --color-amber-light: #f59e0b;
+  --color-amber-dark: #b45309;
+  --color-warmblack: #1a1208;
+  --color-warmgrey: #78716c;
+  --color-warmgrey-light: #d6d3d1;
+  --color-warmgrey-pale: #f5f0eb;
+  --color-pb: #c8956c;
+}

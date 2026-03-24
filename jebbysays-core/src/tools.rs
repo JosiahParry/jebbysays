@@ -75,7 +75,8 @@ impl Portfolio {
 
         let url = format!("sqlite:{}?mode=rwc", path.display());
         let db = SqlitePool::connect(&url).await?;
-        sqlx::migrate!().run(&db).await?;
+
+        sqlx::migrate!("../migrations").run(&db).await?;
 
         Ok(Self {
             db,

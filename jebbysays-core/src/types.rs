@@ -1,8 +1,11 @@
 use jiff::Timestamp;
-use serde::Serialize;
-use sqlx::{FromRow, types::Json};
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, FromRow)]
+#[cfg(feature = "ssr")]
+use sqlx::types::Json;
+
+#[cfg(feature = "ssr")]
+#[derive(Debug, sqlx::FromRow)]
 pub struct TaskRow {
     pub id: String,
     pub created: i64,
@@ -17,7 +20,7 @@ pub struct TaskRow {
     pub depends_on: Option<String>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Task {
     pub id: String,
     pub created: Timestamp,
@@ -32,6 +35,7 @@ pub struct Task {
     pub depends_on: Option<String>,
 }
 
+#[cfg(feature = "ssr")]
 impl From<TaskRow> for Task {
     fn from(row: TaskRow) -> Self {
         let tags = row.tags.map(|t| t.0);
@@ -55,7 +59,8 @@ impl From<TaskRow> for Task {
     }
 }
 
-#[derive(Debug, Serialize, FromRow)]
+#[cfg_attr(feature = "ssr", derive(sqlx::FromRow))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Objective {
     pub id: String,
     pub title: String,

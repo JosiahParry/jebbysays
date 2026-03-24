@@ -98,7 +98,7 @@ jebbysays gives your LLM a structured view of your work through two concepts:
 
 **Tasks** — the concrete work that moves your objectives forward. Tasks have priorities, deadlines, tags, and context, and belong to an objective.
 
-Talk to jebby and ask for your daily briefing, run a weekly retro, or just ask "what should I focus on?" It will. get. done.
+Talk to jebby and ask for your daily briefing, run a weekly retro, or just ask "what should I focus on?"
 
 ## resources
 

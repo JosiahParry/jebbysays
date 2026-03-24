@@ -12,11 +12,11 @@ use sqlx::SqlitePool;
 use crate::types::{Objective, Task, TaskRow};
 
 #[derive(Clone, Debug)]
-pub(crate) struct Portfolio {
-    pub(crate) db: SqlitePool,
-    pub(crate) user_id: String,
-    pub(crate) tool_router: ToolRouter<Portfolio>,
-    pub(crate) prompt_router: PromptRouter<Portfolio>,
+pub struct Portfolio {
+    pub db: SqlitePool,
+    pub user_id: String,
+    pub tool_router: ToolRouter<Portfolio>,
+    pub prompt_router: PromptRouter<Portfolio>,
 }
 
 impl Portfolio {

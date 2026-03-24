@@ -1,38 +1,183 @@
 [package]
 name = "jebbysays"
-version = "0.1.1"
-edition = "2024"
+version = "0.1.0"
+edition = "2021"
 
-[dependencies]
-anyhow = "1.0.102"
-axum = "0.8.8"
-clap = { version = "4.6.0", features = ["derive"] }
-dirs = "6.0.0"
-jiff = { version = "0.2.23", features = ["serde"] }
+[workspace]
+resolver = "2"
+members = ["app", "frontend", "jebbysays-core"]
+
+[workspace.dependencies]
+# Leptos
+leptos = { version = "0.8.2" }
+leptos_axum = { version = "0.8.2" }
+leptos_meta = { version = "0.8.2" }
+leptos_router = { version = "0.8.2" }
+leptos_icons = { version = "0.7.0" }
+icondata = { version = "0.5.0", default-features = false, features = ["lucide"] }
+
+# Web / Axum
+axum = { version = "0.8.4", features = ["macros"] }
+http = "1.3.1"
+reqwest = { version = "0.13.2", features = ["json", "form"] }
+oauth2 = { version = "5.0.0" }
+tower = { version = "0.5.2", features = ["full"] }
+tower-http = { version = "0.6.4", features = ["full"] }
+tower-sessions = { version = "0.14" }
+tower-sessions-sqlx-store = { version = "0.15", features = ["sqlite"] }
+
+# Async / Runtime
+tokio = { version = "1.45.0", features = ["full"] }
+tokio-util = "0.7.18"
+
 jsonwebtoken = { version = "10.3.0", features = ["aws_lc_rs"] }
-reqwest = { version = "0.13.2", features = ["json"] }
-rmcp = { version = "1.2.0", features = [
-  "transport-io",
-  "transport-streamable-http-server",
-] }
 schemars = { version = "1.2.1", features = ["jiff02"] }
+# Serialization
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.149"
+
+# Database
 sqlx = { version = "0.8.6", features = [
   "json",
   "macros",
   "runtime-tokio",
   "sqlite"
 ] }
-tokio = { version = "1.50.0", features = ["full"] }
-tokio-util = "0.7.18"
-tower = { version = "0.5.3", features = ["util"] }
-tower-http = { version = "0.6.8", features = ["cors", "fs"] }
+
+# MCP
+rmcp = { version = "1.2.0", features = [
+  "transport-io",
+  "transport-streamable-http-server"
+] }
+
+# Time
+jiff = { version = "0.2.23", features = ["serde"] }
+
+# Error handling / Logging
+anyhow = "1.0.102"
+console_error_panic_hook = "0.1.7"
+console_log = "1.0.0"
+log = "0.4.27"
+simple_logger = "5.0.0"
+thiserror = "2.0.12"
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
+
+# CLI
+clap = { version = "4.6.0", features = ["derive"] }
+dirs = "6.0.0"
+
+rand = "0.9"
+sha2 = "0.10"
+base64 = "0.22"
+urlencoding = "2"
+cfg-if = "1.0.0"
+# Wasm
+wasm-bindgen = "0.2.106"
+
+# Misc
 ulid = { version = "1.2.1", features = ["serde"] }
 
+# See https://github.com/leptos-rs/cargo-leptos for documentation of all the parameters.
+
+# A leptos project defines which workspace members
+# that are used together frontend (lib) & server (bin)
+[[workspace.metadata.leptos]]
+# this name is used for the wasm, js and css file names
+name = "jebbysays"
+
+# the package in the workspace that contains the server binary (binary crate)
+bin-package = "jebbysays"
+
+# the package in the workspace that contains the frontend wasm binary (library crate)
+lib-package = "frontend"
+
+# The site root folder is where cargo-leptos generate all output. WARNING: all content of this folder will be erased on a rebuild. Use it in your server setup.
+site-root = "target/site"
+
+# The site-root relative folder where all compiled output (JS, WASM and CSS) is written
+# Defaults to pkg
+site-pkg-dir = "pkg"
+
+# [Optional] The source CSS file. If it ends with .sass or .scss then it will be compiled by dart-sass into CSS. The CSS is optimized by Lightning CSS before being written to <site-root>/<site-pkg>/app.css
+tailwind-input-file = "style/tailwind.css"
+
+# Assets source dir. All files found here will be copied and synchronized to site-root.
+# The assets-dir cannot have a sub directory with the same name/path as site-pkg-dir.
+#
+# Optional. Env: LEPTOS_ASSETS_DIR.
+assets-dir = "public"
+
+# The IP and port (ex: 127.0.0.1:3000) where the server serves the content. Use it in your server setup.
+site-addr = "127.0.0.1:3000"
+
+# The port to use for automatic reload monitoring
+reload-port = 3001
+
+# [Optional] Command to use when running end2end tests. It will run in the end2end dir.
+#   [Windows] for non-WSL use "npx.cmd playwright test"
+#   This binary name can be checked in Powershell with Get-Command npx
+end2end-cmd = "npx playwright test"
+end2end-dir = "end2end"
+
+# The browserlist query used for optimizing the CSS.
+browserquery = "defaults"
+
+# Set by cargo-leptos watch when building with that tool. Controls whether autoreload JS will be included in the head
+watch = false
+
+# The environment Leptos will run in, usually either "DEV" or "PROD"
+env = "DEV"
+
+# The features to use when compiling the bin target
+#
+# Optional. Can be over-ridden with the command line parameter --bin-features
+bin-features = []
+
+# If the --no-default-features flag should be used when compiling the bin target
+#
+# Optional. Defaults to false.
+bin-default-features = false
+
+# The features to use when compiling the lib target
+#
+# Optional. Can be over-ridden with the command line parameter --lib-features
+lib-features = []
+
+# If the --no-default-features flag should be used when compiling the lib target
+#
+# Optional. Defaults to false.
+lib-default-features = false
+
+[[bin]]
+name = "jebbysays"
+path = "src/main.rs"
+
+[dependencies]
+app = { path = "./app", default-features = false, features = ["ssr"] }
+jebbysays-core = { path = "./jebbysays-core", features = ["ssr"] }
+leptos = { workspace = true, features = ["ssr"] }
+leptos_axum = { workspace = true }
+leptos_meta = { workspace = true }
+leptos_router = { workspace = true }
+
+anyhow = { workspace = true }
+axum = { workspace = true }
+clap = { workspace = true }
+dirs = { workspace = true }
+rmcp = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+tokio-util = { workspace = true }
+tower = { workspace = true }
+tower-http = { workspace = true }
+tower-sessions = { workspace = true }
+tower-sessions-sqlx-store = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true, features = ["env-filter"] }
+
+# need to be applied only to wasm build
 [profile.release]
-strip = true
+opt-level = "z"
 lto = true
 codegen-units = 1

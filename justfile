@@ -2,13 +2,13 @@ default:
     just --list
 
 fmt:
-    cargo fmt
+    cargo fmt && leptosfmt app
 
 clear:
     cargo sqlx database reset -y && cargo sqlx migrate run
 
 serve:
-    cargo run -- serve
+    cargo leptos watch serve
 
 install:
     cargo sqlx migrate run
@@ -24,6 +24,10 @@ install:
 
 deploy:
     ssh -i ~/.ssh/jebbysays root@$SERVER_IP 'source ~/.cargo/env && cd /root/github/jebbysays && git switch main && git pull && just install'
+
+hooks:
+    echo 'git sv vcm $1' > .git/hooks/prepare-commit-msg
+    chmod +x .git/hooks/prepare-commit-msg
 
 new-migration name:
     cargo sqlx migrate add -r {{name}}

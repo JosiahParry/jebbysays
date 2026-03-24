@@ -1,60 +1,65 @@
-pub mod auth;
-pub mod http;
-pub mod portfolio;
-pub mod prompts;
-pub mod resources;
-pub mod tools;
-pub mod types;
-
-use std::{path::PathBuf, sync::Arc};
-
 use anyhow::anyhow;
-use axum::{Json, Router, middleware, response::Html, routing::get};
+use app::{shell, App};
+use axum::{extract::State, middleware, routing::get, Json, Router};
 use clap::{Parser, Subcommand};
-use portfolio::Portfolio;
-use rmcp::{ServiceExt, transport::stdio};
+use jebbysays_core::auth::jwks::JwksCache;
+use jebbysays_core::auth::middleware::auth_middleware;
+use jebbysays_core::auth::web::{callback_handler, login_handler, logout_handler, WebAuthState};
+use jebbysays_core::{McpState, OAuthConfig, Portfolio};
+use leptos::prelude::*;
+use leptos_axum::{generate_route_list, LeptosRoutes};
+use rmcp::transport::streamable_http_server::session::local::LocalSessionManager;
+use rmcp::{transport::stdio, ServiceExt};
 use serde_json::json;
+use std::net::SocketAddr;
+use std::path::PathBuf;
+use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
 use tower_http::cors::{Any, CorsLayer};
-use tower_http::services::ServeDir;
+use tower_sessions::{cookie::SameSite, SessionManagerLayer};
+use tower_sessions_sqlx_store::SqliteStore;
 use tracing_subscriber::{
     layer::SubscriberExt,
     util::SubscriberInitExt,
     {self},
 };
 
-use auth::{OAuthConfig, jwks::JwksCache, middleware::auth_middleware};
-use http::McpState;
-use rmcp::transport::streamable_http_server::session::local::LocalSessionManager;
-
-async fn landing() -> Html<&'static str> {
-    Html(include_str!("../index.html"))
+#[derive(Clone, axum::extract::FromRef)]
+struct AppState {
+    mcp: Arc<McpState>,
+    jwks: Arc<JwksCache>,
+    leptos: LeptosOptions,
 }
 
-async fn oauth_authorization_server(
-    axum::extract::State(state): axum::extract::State<Arc<McpState>>,
-) -> Json<serde_json::Value> {
+impl axum::extract::FromRef<AppState> for WebAuthState {
+    fn from_ref(state: &AppState) -> Self {
+        Self {
+            oauth: state.mcp.oauth.clone(),
+            jwks: state.jwks.clone(),
+        }
+    }
+}
+
+async fn oauth_authorization_server(State(state): State<AppState>) -> Json<serde_json::Value> {
     let mut doc = json!({
-        "issuer": state.oauth.issuer,
-        "authorization_endpoint": state.oauth.authorization_endpoint,
-        "token_endpoint": state.oauth.token_endpoint,
+        "issuer": state.mcp.oauth.issuer,
+        "authorization_endpoint": state.mcp.oauth.authorization_endpoint,
+        "token_endpoint": state.mcp.oauth.token_endpoint,
         "response_types_supported": ["code"],
         "code_challenge_methods_supported": ["S256"],
     });
 
-    if let Some(reg) = &state.oauth.registration_endpoint {
+    if let Some(reg) = &state.mcp.oauth.registration_endpoint {
         doc["registration_endpoint"] = json!(reg);
     }
 
     Json(doc)
 }
 
-async fn oauth_protected_resource(
-    axum::extract::State(state): axum::extract::State<Arc<McpState>>,
-) -> Json<serde_json::Value> {
+async fn oauth_protected_resource(State(state): State<AppState>) -> Json<serde_json::Value> {
     Json(json!({
-        "resource": state.oauth.audience,
-        "authorization_servers": [state.oauth.audience],
+        "resource": state.mcp.oauth.audience,
+        "authorization_servers": [state.mcp.oauth.audience],
     }))
 }
 
@@ -115,27 +120,57 @@ async fn main() -> anyhow::Result<()> {
             )
             .init();
 
+            let conf = get_configuration(Some("Cargo.toml"))?;
+            let leptos_options = LeptosOptions::builder()
+                .output_name("jebbysays")
+                .site_addr(format!("127.0.0.1:{port}").parse::<SocketAddr>()?)
+                .site_root(conf.leptos_options.site_root)
+                .site_pkg_dir(conf.leptos_options.site_pkg_dir)
+                .build();
+
+            let routes = generate_route_list(App);
+
             let ct = CancellationToken::new();
             let oauth = Arc::new(OAuthConfig::from_env().await?);
             let jwks = Arc::new(JwksCache::new(oauth.clone()).await?);
-            let state = Arc::new(McpState {
+
+            let session_store = SqliteStore::new(portfolio.db.clone());
+            session_store.migrate().await?;
+            let session_layer = SessionManagerLayer::new(session_store)
+                .with_secure(false)
+                .with_same_site(SameSite::Lax);
+
+            let mcp_state = Arc::new(McpState {
                 db: portfolio.db,
                 ct: ct.child_token(),
                 oauth,
                 sessions: Arc::new(LocalSessionManager::default()),
             });
 
+            let app_state = AppState {
+                mcp: mcp_state,
+                jwks,
+                leptos: leptos_options,
+            };
+
             let cors = CorsLayer::new()
                 .allow_origin(Any)
                 .allow_methods(Any)
                 .allow_headers(Any);
 
+            // MCP sub-router with auth middleware scoped to /mcp only
+            let mcp_router = Router::new()
+                .route("/mcp", axum::routing::any(mcp_handler_with_state))
+                .route_layer(middleware::from_fn_with_state(
+                    app_state.jwks.clone(),
+                    auth_middleware,
+                ));
+
             let router = Router::new()
-                .route("/mcp", axum::routing::any(http::mcp_handler))
-                .route_layer(middleware::from_fn_with_state(jwks, auth_middleware))
-                .with_state(state.clone())
-                .route("/", get(landing))
-                .nest_service("/imgs", ServeDir::new("imgs"))
+                .merge(mcp_router)
+                .route("/auth/login", get(login_handler))
+                .route("/auth/callback", get(callback_handler))
+                .route("/auth/logout", get(logout_handler))
                 .route(
                     "/.well-known/oauth-authorization-server",
                     get(oauth_authorization_server),
@@ -148,12 +183,26 @@ async fn main() -> anyhow::Result<()> {
                     "/.well-known/oauth-protected-resource/mcp",
                     get(oauth_protected_resource),
                 )
-                .with_state(state)
+                .leptos_routes_with_context(
+                    &app_state,
+                    routes,
+                    {
+                        let mcp = app_state.mcp.clone();
+                        move || provide_context(mcp.clone())
+                    },
+                    {
+                        let leptos_options = app_state.leptos.clone();
+                        move || shell(leptos_options.clone())
+                    },
+                )
+                .fallback(leptos_axum::file_and_error_handler::<AppState, _>(shell))
+                .with_state(app_state)
+                .layer(session_layer)
                 .layer(cors);
 
             let addr = format!("127.0.0.1:{port}");
             let tcp_listener = tokio::net::TcpListener::bind(&addr).await?;
-            tracing::info!("Listening on {addr}");
+            tracing::info!("Listening on http://{addr}");
             let _ = axum::serve(tcp_listener, router)
                 .with_graceful_shutdown(async move {
                     tokio::signal::ctrl_c().await.unwrap();
@@ -175,4 +224,13 @@ async fn main() -> anyhow::Result<()> {
     }
 
     Ok(())
+}
+
+/// MCP handler that extracts state from AppState
+async fn mcp_handler_with_state(
+    State(app_state): State<AppState>,
+    axum::extract::Extension(user_id): axum::extract::Extension<String>,
+    request: axum::http::Request<axum::body::Body>,
+) -> axum::response::Response {
+    jebbysays_core::http::mcp_handler_inner(app_state.mcp.clone(), user_id, request).await
 }

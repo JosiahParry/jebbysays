@@ -44,7 +44,7 @@ impl Portfolio {
                  Group incomplete tasks by objective, ordered by priority (highest first). \
                  For each objective show its priority and list its tasks with deadlines if set. \
                  If a task has a depends_on field, check whether that dependency is still incomplete. \
-                 Tasks with incomplete dependencies are blocked and should be marked as such. \
+                 Tasks with incomplete dependencies should be marked as blocked. \
                  Tasks that other tasks depend on should be treated as higher priority, as completing them unblocks downstream work. \
                  Be concise. {objective_instruction}"
             ),

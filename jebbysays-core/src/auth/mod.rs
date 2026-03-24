@@ -1,5 +1,6 @@
 pub mod jwks;
 pub mod middleware;
+pub mod web;
 
 use serde::Deserialize;
 
@@ -18,6 +19,10 @@ pub struct OAuthConfig {
     pub token_endpoint: String,
     pub jwks_uri: String,
     pub registration_endpoint: Option<String>,
+    /// Only needed for the web UI login flow. Not required for MCP-only deployments.
+    pub client_id: Option<String>,
+    /// Derived from `audience` if `client_id` is set.
+    pub redirect_uri: Option<String>,
 }
 
 impl OAuthConfig {
@@ -26,6 +31,10 @@ impl OAuthConfig {
             .map_err(|_| anyhow::anyhow!("MCP_SERVER_URL must be set"))?;
         let issuer = std::env::var("OAUTH_ISSUER")
             .map_err(|_| anyhow::anyhow!("OAUTH_ISSUER must be set"))?;
+        let client_id = std::env::var("OAUTH_CLIENT_ID").ok();
+        let redirect_uri = client_id
+            .as_ref()
+            .map(|_| format!("{}/auth/callback", audience.trim_end_matches('/')));
 
         let discovery_url = format!(
             "{}/.well-known/oauth-authorization-server",
@@ -43,6 +52,8 @@ impl OAuthConfig {
             token_endpoint: metadata.token_endpoint,
             jwks_uri: metadata.jwks_uri,
             registration_endpoint: metadata.registration_endpoint,
+            client_id,
+            redirect_uri,
         })
     }
 }

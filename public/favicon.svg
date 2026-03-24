@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- cream background -->
+  <rect width="32" height="32" rx="7" fill="#fdf6ec"/>
+  <!-- main pad -->
+  <ellipse cx="16" cy="21" rx="6" ry="5" fill="#d97706"/>
+  <!-- toe beans -->
+  <ellipse cx="9.5" cy="14" rx="2.2" ry="2.6" fill="#d97706"/>
+  <ellipse cx="14" cy="11.5" rx="2.2" ry="2.6" fill="#d97706"/>
+  <ellipse cx="18.5" cy="11.5" rx="2.2" ry="2.6" fill="#d97706"/>
+  <ellipse cx="23" cy="14" rx="2.2" ry="2.6" fill="#d97706"/>
+</svg>

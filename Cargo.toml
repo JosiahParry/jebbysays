@@ -1,6 +1,6 @@
 [package]
 name = "jebbysays"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 
 [workspace]
@@ -155,10 +155,10 @@ name = "jebbysays"
 path = "src/main.rs"
 
 [dependencies]
-app = { path = "./app", default-features = false, features = ["ssr"] , version = "0.2.0" }
+app = { path = "./app", default-features = false, features = ["ssr"] , version = "0.2.1" }
 rust-embed = { version = "8", features = ["include-exclude"] }
 mime_guess = "2"
-jebbysays-core = { path = "./jebbysays-core", features = ["ssr"] , version = "0.2.0" }
+jebbysays-core = { path = "./jebbysays-core", features = ["ssr"] , version = "0.2.1" }
 leptos = { workspace = true, features = ["ssr"] }
 leptos_axum = { workspace = true }
 leptos_meta = { workspace = true }

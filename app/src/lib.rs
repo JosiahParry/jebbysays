@@ -1,10 +1,10 @@
 use leptos::prelude::*;
-use leptos_meta::{provide_meta_context, MetaTags, Stylesheet, Title};
+use leptos_meta::{provide_meta_context, Html, MetaTags, Stylesheet, Title};
 use leptos_router::{
     components::{Route, Router, Routes},
     StaticSegment,
 };
-
+use leptos_use::{use_color_mode_with_options, UseColorModeOptions, UseColorModeReturn};
 pub mod components;
 use components::dashboard::DashboardPage;
 use components::{
@@ -35,7 +35,13 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
 pub fn App() -> AnyView {
     provide_meta_context();
 
+    let UseColorModeReturn { mode, set_mode, .. } =
+        use_color_mode_with_options(UseColorModeOptions::default().cookie_enabled(true));
+    provide_context(mode);
+    provide_context(set_mode);
+
     view! {
+        <Html {..} class=move || mode.get().to_string() />
         <Stylesheet id="leptos" href="/pkg/jebbysays.css" />
         <Title text="jebbysays — do a dance moves" />
         <Router>
@@ -51,7 +57,7 @@ pub fn App() -> AnyView {
 #[component]
 fn HomePage() -> AnyView {
     view! {
-        <div class="bg-cream text-warmblack">
+        <div class="bg-cream dark:bg-warmblack text-warmblack dark:text-cream">
             <Navbar />
             <Hero />
             <Divider />

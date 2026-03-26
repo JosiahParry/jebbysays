@@ -17,4 +17,33 @@
   --color-warmgrey-light: #d6d3d1;
   --color-warmgrey-pale: #f5f0eb;
   --color-pb: #c8956c;
+  --shadow-amber-glow: 0 0 24px 2px rgba(217,119,6,0.08);
+
+  /* semantic surface tokens — override in .dark */
+  --color-surface-page: var(--color-cream);
+  --color-surface-card: #ffffff;
+  --color-surface-subtle: var(--color-warmgrey-pale);
+  --color-border-default: var(--color-warmgrey-light);
+  --color-text-primary: var(--color-warmblack);
+  --color-text-secondary: var(--color-warmgrey);
+  --color-accent: var(--color-amber);
+  --color-accent-hover: var(--color-amber-dark);
+  --color-code-bg: var(--color-warmblack);
+}
+
+@layer base {
+  .dark {
+    --color-surface-page: #1a1208;
+    --color-surface-card: #2a1d10;
+    --color-code-bg: #100b05;
+    --color-surface-subtle: #231508;
+    --color-border-default: #3d2b18;
+    --color-text-primary: #fdf6ec;
+    --color-text-secondary: #c4b8ae;
+    --color-accent: #f59e0b;
+    --color-accent-hover: #d97706;
+
+    /* boost warmgrey contrast in dark mode */
+    --color-warmgrey: #c4b8ae;
+  }
 }

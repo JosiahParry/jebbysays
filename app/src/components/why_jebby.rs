@@ -27,5 +27,6 @@ pub(crate) fn WhyJebby() -> AnyView {
                 </li>
             </ul>
         </section>
-    }.into_any()
+    }
+    .into_any()
 }

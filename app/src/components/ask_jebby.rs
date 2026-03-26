@@ -9,7 +9,7 @@ pub(crate) fn AskJebby() -> AnyView {
                 "she will not let you spiral. trust the process."
             </p>
             <div class="grid sm:grid-cols-2 gap-5">
-                <div class="flex gap-4 items-start p-5 rounded-2xl hover:bg-warmgrey-pale transition-colors">
+                <div class="flex gap-4 items-start p-5 rounded-2xl hover:bg-warmgrey-pale dark:hover:bg-surface-subtle transition-colors">
                     <span class="text-2xl mt-0.5">"☀️"</span>
                     <div>
                         <h4 class="font-extrabold mb-1">"daily briefing"</h4>
@@ -18,7 +18,7 @@ pub(crate) fn AskJebby() -> AnyView {
                         </p>
                     </div>
                 </div>
-                <div class="flex gap-4 items-start p-5 rounded-2xl hover:bg-warmgrey-pale transition-colors">
+                <div class="flex gap-4 items-start p-5 rounded-2xl hover:bg-warmgrey-pale dark:hover:bg-surface-subtle transition-colors">
                     <span class="text-2xl mt-0.5">"🔭"</span>
                     <div>
                         <h4 class="font-extrabold mb-1">"week ahead"</h4>
@@ -27,7 +27,7 @@ pub(crate) fn AskJebby() -> AnyView {
                         </p>
                     </div>
                 </div>
-                <div class="flex gap-4 items-start p-5 rounded-2xl hover:bg-warmgrey-pale transition-colors">
+                <div class="flex gap-4 items-start p-5 rounded-2xl hover:bg-warmgrey-pale dark:hover:bg-surface-subtle transition-colors">
                     <span class="text-2xl mt-0.5">"🪞"</span>
                     <div>
                         <h4 class="font-extrabold mb-1">"weekly retro"</h4>
@@ -36,7 +36,7 @@ pub(crate) fn AskJebby() -> AnyView {
                         </p>
                     </div>
                 </div>
-                <div class="flex gap-4 items-start p-5 rounded-2xl hover:bg-warmgrey-pale transition-colors">
+                <div class="flex gap-4 items-start p-5 rounded-2xl hover:bg-warmgrey-pale dark:hover:bg-surface-subtle transition-colors">
                     <span class="text-2xl mt-0.5">"🧠"</span>
                     <div>
                         <h4 class="font-extrabold mb-1">"what should I do right now?"</h4>

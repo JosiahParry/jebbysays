@@ -14,6 +14,7 @@ leptos_axum = { version = "0.8.2" }
 leptos_meta = { version = "0.8.2" }
 leptos_router = { version = "0.8.2" }
 leptos_icons = { version = "0.7.0" }
+leptos-use = { version = "0.18", features = ["use_color_mode"] }
 icondata = { version = "0.5.0", default-features = false, features = ["lucide"] }
 
 # Web / Axum
@@ -155,6 +156,8 @@ path = "src/main.rs"
 
 [dependencies]
 app = { path = "./app", default-features = false, features = ["ssr"] }
+rust-embed = { version = "8", features = ["include-exclude"] }
+mime_guess = "2"
 jebbysays-core = { path = "./jebbysays-core", features = ["ssr"] }
 leptos = { workspace = true, features = ["ssr"] }
 leptos_axum = { workspace = true }

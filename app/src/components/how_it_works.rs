@@ -9,7 +9,7 @@ pub(crate) fn HowItWorks() -> AnyView {
                 "jebby keeps it simple. you just have to show up."
             </p>
             <div class="grid sm:grid-cols-3 gap-8">
-                <div class="bg-warmgrey-pale rounded-2xl p-7 flex flex-col gap-3">
+                <div class="bg-warmgrey-pale dark:bg-surface-subtle rounded-2xl p-7 flex flex-col gap-3">
                     <div class="text-3xl">"🎯"</div>
                     <h3 class="font-black text-lg">"tell jebby your goals"</h3>
                     <p class="text-warmgrey text-sm leading-relaxed">
@@ -23,7 +23,7 @@ pub(crate) fn HowItWorks() -> AnyView {
                         "attach tasks to your goals. set deadlines, priorities, tags, and context. jebby doesn't let things fall through the cracks\u{2014}she's built different."
                     </p>
                 </div>
-                <div class="bg-warmgrey-pale rounded-2xl p-7 flex flex-col gap-3">
+                <div class="bg-warmgrey-pale dark:bg-surface-subtle rounded-2xl p-7 flex flex-col gap-3">
                     <div class="text-3xl">"💬"</div>
                     <h3 class="font-black text-lg">"do what jebby says"</h3>
                     <p class="text-warmgrey text-sm leading-relaxed">

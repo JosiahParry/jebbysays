@@ -1,6 +1,7 @@
 use icondata as id;
 use leptos::prelude::*;
 use leptos_icons::Icon;
+use leptos_use::ColorMode;
 
 #[server]
 pub async fn get_user_id() -> Result<Option<String>, ServerFnError> {
@@ -18,11 +19,11 @@ pub(crate) fn Navbar() -> AnyView {
     let user = Resource::new(|| (), |_| get_user_id());
 
     view! {
-        <nav class="sticky top-0 z-50 bg-cream/95 backdrop-blur border-b border-warmgrey-light">
+        <nav class="sticky top-0 z-50 bg-cream/95 dark:bg-warmblack/95 backdrop-blur border-b border-warmgrey-light dark:border-border-default">
             <div class="flex items-center justify-between px-6 py-3 max-w-5xl mx-auto">
                 <a
                     href="/"
-                    class="text-xl font-black tracking-tight text-warmblack flex items-center gap-1"
+                    class="text-xl font-black tracking-tight text-warmblack dark:text-cream flex items-center gap-1"
                 >
                     "jebby"
                     <span class="text-amber">"says."</span>
@@ -34,7 +35,7 @@ pub(crate) fn Navbar() -> AnyView {
                                 view! {
                                     <a
                                         href="/dashboard"
-                                        class="flex items-center gap-1.5 text-sm text-warmgrey hover:text-warmblack transition-colors px-3 py-1.5 rounded-lg hover:bg-warmgrey-pale"
+                                        class="flex items-center gap-1.5 text-sm text-warmgrey hover:text-warmblack dark:hover:text-cream transition-colors px-3 py-1.5 rounded-lg hover:bg-warmgrey-pale dark:hover:bg-surface-subtle"
                                     >
                                         <Icon icon=id::LuLayoutDashboard width="15" height="15" />
                                         "dashboard"
@@ -42,7 +43,7 @@ pub(crate) fn Navbar() -> AnyView {
                                     <a
                                         href="/auth/logout"
                                         rel="external"
-                                        class="flex items-center gap-1.5 text-sm text-warmgrey hover:text-warmblack transition-colors px-3 py-1.5 rounded-lg hover:bg-warmgrey-pale"
+                                        class="flex items-center gap-1.5 text-sm text-warmgrey hover:text-warmblack dark:hover:text-cream transition-colors px-3 py-1.5 rounded-lg hover:bg-warmgrey-pale dark:hover:bg-surface-subtle"
                                     >
                                         <Icon icon=id::LuLogOut width="15" height="15" />
                                         "sign out"
@@ -55,7 +56,7 @@ pub(crate) fn Navbar() -> AnyView {
                                     <a
                                         href="/auth/login"
                                         rel="external"
-                                        class="text-sm text-warmgrey hover:text-warmblack transition-colors px-3 py-1.5 rounded-lg hover:bg-warmgrey-pale"
+                                        class="text-sm text-warmgrey hover:text-warmblack dark:hover:text-cream transition-colors px-3 py-1.5 rounded-lg hover:bg-warmgrey-pale dark:hover:bg-surface-subtle"
                                     >
                                         "sign in"
                                     </a>
@@ -71,6 +72,35 @@ pub(crate) fn Navbar() -> AnyView {
                             }
                         }}
                     </Suspense>
+                    {
+                        let mode = expect_context::<Signal<ColorMode>>();
+                        let set_mode = expect_context::<WriteSignal<ColorMode>>();
+                        view! {
+                            <button
+                                on:click=move |_| {
+                                    set_mode
+                                        .set(
+                                            if mode.get() == ColorMode::Dark {
+                                                ColorMode::Light
+                                            } else {
+                                                ColorMode::Dark
+                                            },
+                                        );
+                                }
+                                class="text-warmgrey hover:text-warmblack dark:hover:text-cream transition-colors p-1.5 rounded-lg hover:bg-warmgrey-pale dark:hover:bg-surface-subtle"
+                            >
+                                {move || {
+                                    if mode.get() == ColorMode::Dark {
+                                        view! { <Icon icon=id::LuSun width="16" height="16" /> }
+                                            .into_any()
+                                    } else {
+                                        view! { <Icon icon=id::LuMoon width="16" height="16" /> }
+                                            .into_any()
+                                    }
+                                }}
+                            </button>
+                        }
+                    }
                 </div>
             </div>
         </nav>

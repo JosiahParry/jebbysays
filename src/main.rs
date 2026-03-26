@@ -1,3 +1,5 @@
+mod file_handler;
+
 use anyhow::anyhow;
 use app::{shell, App};
 use axum::{extract::State, middleware, routing::get, Json, Router};
@@ -167,6 +169,10 @@ async fn main() -> anyhow::Result<()> {
 
             let router = Router::new()
                 .merge(mcp_router)
+                .route("/pkg/{*path}", get(file_handler::serve_pkg_file))
+                .route("/imgs/{*path}", get(file_handler::serve_img_file))
+                .route("/favicon.svg", get(file_handler::serve_favicon_svg))
+                .route("/favicon.ico", get(file_handler::serve_favicon_ico))
                 .route("/auth/login", get(login_handler))
                 .route("/auth/callback", get(callback_handler))
                 .route("/auth/logout", get(logout_handler))

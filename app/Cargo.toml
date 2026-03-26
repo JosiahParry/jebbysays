@@ -6,24 +6,34 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+icondata.workspace = true
+jebbysays-core = { path = "../jebbysays-core", default-features = false }
 leptos.workspace = true
-leptos_meta.workspace = true
-leptos_router.workspace = true
 leptos_axum = { workspace = true, optional = true }
 leptos_icons.workspace = true
-icondata.workspace = true
-tower-sessions = { workspace = true, optional = true }
-jebbysays-core = { path = "../jebbysays-core", default-features = false }
+leptos_meta.workspace = true
+leptos_router.workspace = true
+leptos-use = { workspace = true }
 sqlx = { workspace = true, optional = true }
+tower-sessions = { workspace = true, optional = true }
 
-http.workspace = true
 cfg-if.workspace = true
-thiserror.workspace = true
-serde = { workspace = true }
+http.workspace = true
 jiff = { workspace = true }
+serde = { workspace = true }
+thiserror.workspace = true
 
 [features]
 default = []
 hydrate = ["leptos/hydrate"]
-ssr = ["leptos/ssr", "leptos_meta/ssr", "leptos_router/ssr", "dep:leptos_axum", "dep:tower-sessions", "dep:sqlx", "jebbysays-core/ssr"]
-
+ssr = [
+  "dep:leptos_axum",
+  "dep:sqlx",
+  "dep:tower-sessions",
+  "jebbysays-core/ssr",
+  "leptos_meta/ssr",
+  "leptos_router/ssr",
+  "leptos-use/axum",
+  "leptos-use/ssr",
+  "leptos/ssr"
+]

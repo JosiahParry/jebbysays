@@ -5,7 +5,7 @@ use leptos::prelude::*;
 pub(crate) fn Hero() -> AnyView {
     view! {
         <section class="max-w-5xl mx-auto px-6 pt-16 pb-20 text-center">
-            <div class="inline-block bg-warmgrey-pale border border-warmgrey-light text-warmgrey text-xs px-3 py-1 rounded-full mb-6 tracking-widest">
+            <div class="inline-block bg-warmgrey-pale dark:bg-surface-subtle border border-warmgrey-light dark:border-border-default text-warmgrey text-xs px-3 py-1 rounded-full mb-6 tracking-widest">
                 "jebby says do a dance moves"
             </div>
             <h1 class="text-5xl sm:text-6xl font-black leading-tight mb-5">
@@ -29,14 +29,14 @@ pub(crate) fn Hero() -> AnyView {
                 </a>
                 <a
                     href="https://github.com/josiahparry/jebbysays"
-                    class="text-warmgrey font-bold px-7 py-3 rounded-full border border-warmgrey-light text-base hover:border-warmgrey hover:text-warmblack transition-colors"
+                    class="text-warmgrey font-bold px-7 py-3 rounded-full border border-warmgrey-light dark:border-border-default text-base hover:border-warmgrey hover:text-warmblack dark:hover:text-cream transition-colors"
                 >
                     "self-host it"
                 </a>
             </div>
 
             <div class="max-w-lg mx-auto">
-                <div class="bg-warmblack rounded-2xl overflow-hidden">
+                <div class="bg-code-bg rounded-2xl overflow-hidden dark:shadow-amber-glow">
                     <div class="flex items-center justify-between px-5 py-3 border-b border-white/10">
                         <div class="flex items-center gap-2">
                             <span class="w-3 h-3 rounded-full bg-red-400"></span>

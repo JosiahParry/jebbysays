@@ -65,7 +65,7 @@ fn NotLoggedIn() -> impl IntoView {
     view! {
         <div class="flex flex-col items-center justify-center min-h-[60vh] text-center px-6">
             <div class="text-6xl mb-6">"💅"</div>
-            <h2 class="text-3xl font-black text-warmblack mb-3">
+            <h2 class="text-3xl font-black text-warmblack dark:text-cream mb-3">
                 "jebby says: " <span class="text-amber">"sign in first!"</span>
             </h2>
             <p class="text-warmgrey text-lg max-w-sm mb-2">
@@ -92,7 +92,7 @@ pub fn DashboardPage() -> impl IntoView {
     let tasks = Resource::new(|| (), |_| get_incomplete_tasks());
 
     view! {
-        <div class="min-h-screen bg-cream">
+        <div class="min-h-screen bg-cream dark:bg-warmblack">
             <Navbar />
             <Suspense>
                 {move || match user.get() {
@@ -101,7 +101,7 @@ pub fn DashboardPage() -> impl IntoView {
                         view! {
                             <div class="max-w-5xl mx-auto px-6 py-10">
                                 <div class="mb-8">
-                                    <h1 class="text-3xl font-black text-warmblack">
+                                    <h1 class="text-3xl font-black text-warmblack dark:text-cream">
                                         "what's the move?"
                                     </h1>
                                     <p class="text-warmgrey mt-1">
@@ -116,7 +116,7 @@ pub fn DashboardPage() -> impl IntoView {
                                             <span class="text-amber">
                                                 <Icon icon=id::LuTarget width="18" height="18" />
                                             </span>
-                                            <h2 class="font-black text-lg text-warmblack">
+                                            <h2 class="font-black text-lg text-warmblack dark:text-cream">
                                                 "objectives"
                                             </h2>
                                             <Suspense>
@@ -126,7 +126,7 @@ pub fn DashboardPage() -> impl IntoView {
                                                         .and_then(|r: Result<Vec<_>, _>| r.ok())
                                                         .map(|o| {
                                                             view! {
-                                                                <span class="ml-auto text-xs text-warmgrey bg-warmgrey-pale px-2 py-0.5 rounded-full">
+                                                                <span class="ml-auto text-xs text-warmgrey bg-warmgrey-pale dark:bg-surface-subtle px-2 py-0.5 rounded-full">
                                                                     {o.len()} " total"
                                                                 </span>
                                                             }
@@ -149,7 +149,7 @@ pub fn DashboardPage() -> impl IntoView {
                                                 }
                                                 Some(Ok(objs)) if objs.is_empty() => {
                                                     view! {
-                                                        <div class="bg-warmgrey-pale rounded-2xl p-6 text-center text-warmgrey text-sm">
+                                                        <div class="bg-warmgrey-pale dark:bg-surface-subtle dark:border dark:border-border-default rounded-2xl p-6 text-center text-warmgrey text-sm">
                                                             <span class="flex justify-center mb-2 text-amber">
                                                                 <Icon icon=id::LuSparkles width="24" height="24" />
                                                             </span>
@@ -165,9 +165,9 @@ pub fn DashboardPage() -> impl IntoView {
                                                                 .into_iter()
                                                                 .map(|obj| {
                                                                     view! {
-                                                                        <div class="bg-white rounded-2xl p-4 shadow-sm border border-warmgrey-light hover:border-amber transition-colors">
+                                                                        <div class="bg-white dark:bg-surface-card rounded-2xl p-4 shadow-sm border border-warmgrey-light dark:border-border-default hover:border-amber dark:hover:border-amber dark:hover:shadow-amber-glow transition-colors">
                                                                             <div class="flex items-start justify-between gap-2">
-                                                                                <p class="font-bold text-warmblack text-sm leading-snug">
+                                                                                <p class="font-bold text-warmblack dark:text-cream text-sm leading-snug">
                                                                                     {obj.title}
                                                                                 </p>
                                                                                 <span class=format!(
@@ -202,7 +202,7 @@ pub fn DashboardPage() -> impl IntoView {
                                             <span class="text-amber">
                                                 <Icon icon=id::LuListTodo width="18" height="18" />
                                             </span>
-                                            <h2 class="font-black text-lg text-warmblack">
+                                            <h2 class="font-black text-lg text-warmblack dark:text-cream">
                                                 "open tasks"
                                             </h2>
                                             <Suspense>
@@ -212,7 +212,7 @@ pub fn DashboardPage() -> impl IntoView {
                                                         .and_then(|r: Result<Vec<_>, _>| r.ok())
                                                         .map(|t| {
                                                             view! {
-                                                                <span class="ml-auto text-xs text-warmgrey bg-warmgrey-pale px-2 py-0.5 rounded-full">
+                                                                <span class="ml-auto text-xs text-warmgrey bg-warmgrey-pale dark:bg-surface-subtle px-2 py-0.5 rounded-full">
                                                                     {t.len()} " open"
                                                                 </span>
                                                             }
@@ -235,7 +235,7 @@ pub fn DashboardPage() -> impl IntoView {
                                                 }
                                                 Some(Ok(ts)) if ts.is_empty() => {
                                                     view! {
-                                                        <div class="bg-warmgrey-pale rounded-2xl p-6 text-center text-warmgrey text-sm">
+                                                        <div class="bg-warmgrey-pale dark:bg-surface-subtle dark:border dark:border-border-default rounded-2xl p-6 text-center text-warmgrey text-sm">
                                                             <span class="flex justify-center mb-2 text-amber">
                                                                 <Icon icon=id::LuPartyPopper width="24" height="24" />
                                                             </span>
@@ -251,9 +251,9 @@ pub fn DashboardPage() -> impl IntoView {
                                                                 .into_iter()
                                                                 .map(|task| {
                                                                     view! {
-                                                                        <div class="bg-white rounded-2xl p-4 shadow-sm border border-warmgrey-light hover:border-amber transition-colors">
+                                                                        <div class="bg-white dark:bg-surface-card rounded-2xl p-4 shadow-sm border border-warmgrey-light dark:border-border-default hover:border-amber dark:hover:border-amber dark:hover:shadow-amber-glow transition-colors">
                                                                             <div class="flex items-start justify-between gap-2">
-                                                                                <p class="font-bold text-warmblack text-sm leading-snug">
+                                                                                <p class="font-bold text-warmblack dark:text-cream text-sm leading-snug">
                                                                                     {task.title}
                                                                                 </p>
                                                                                 <span class=format!(
@@ -281,7 +281,7 @@ pub fn DashboardPage() -> impl IntoView {
                                                                                                 .into_iter()
                                                                                                 .map(|tag| {
                                                                                                     view! {
-                                                                                                        <span class="text-xs bg-warmgrey-pale text-warmgrey px-2 py-0.5 rounded-full">
+                                                                                                        <span class="text-xs bg-warmgrey-pale dark:bg-surface-subtle text-warmgrey px-2 py-0.5 rounded-full">
                                                                                                             {tag}
                                                                                                         </span>
                                                                                                     }

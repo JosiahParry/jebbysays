@@ -39,7 +39,7 @@ pub(crate) fn GetStarted() -> AnyView {
                         <p class="text-warmgrey text-sm leading-relaxed mb-3">
                             "run this once in your terminal:"
                         </p>
-                        <div class="bg-warmblack rounded-xl overflow-hidden">
+                        <div class="bg-code-bg rounded-xl overflow-hidden dark:shadow-amber-glow">
                             <div class="flex items-center justify-between px-4 py-2.5 border-b border-white/10">
                                 <div class="flex items-center gap-1.5">
                                     <span class="w-3 h-3 rounded-full bg-red-400"></span>
@@ -66,10 +66,10 @@ pub(crate) fn GetStarted() -> AnyView {
                         <p class="font-extrabold mb-1">"authenticate"</p>
                         <p class="text-warmgrey text-sm leading-relaxed">
                             "open Claude Code with "
-                            <code class="bg-warmgrey-pale px-1.5 py-0.5 rounded text-xs font-bold">
+                            <code class="bg-warmgrey-pale dark:bg-surface-subtle px-1.5 py-0.5 rounded text-xs font-bold">
                                 "claude"
                             </code> ", " "type "
-                            <code class="bg-warmgrey-pale px-1.5 py-0.5 rounded text-xs font-bold">
+                            <code class="bg-warmgrey-pale dark:bg-surface-subtle px-1.5 py-0.5 rounded text-xs font-bold">
                                 "/mcp"
                             </code> ", "
                             "find jebby says, and hit authenticate. that's it. jebby's ready."
@@ -91,13 +91,13 @@ pub(crate) fn GetStarted() -> AnyView {
                             "🎯 set up your goals"
                         </p>
                         <div class="flex flex-col gap-3">
-                            <div class="bg-warmgrey-pale border border-warmgrey-light rounded-2xl px-5 py-4">
-                                <p class="text-warmblack text-sm leading-relaxed">
+                            <div class="bg-warmgrey-pale dark:bg-surface-subtle border border-warmgrey-light dark:border-border-default rounded-2xl px-5 py-4">
+                                <p class="text-warmblack dark:text-cream text-sm leading-relaxed">
                                     "I'd like jebby's help getting organized! can you help me create some objectives? for each one, ask me for a title, any additional context that would help my LLM understand the goal, and a priority between 1 and 5."
                                 </p>
                             </div>
-                            <div class="bg-warmgrey-pale border border-warmgrey-light rounded-2xl px-5 py-4">
-                                <p class="text-warmblack text-sm leading-relaxed">
+                            <div class="bg-warmgrey-pale dark:bg-surface-subtle border border-warmgrey-light dark:border-border-default rounded-2xl px-5 py-4">
+                                <p class="text-warmblack dark:text-cream text-sm leading-relaxed">
                                     "what are my current objectives? show me how they're prioritized and give me a quick summary of each one."
                                 </p>
                             </div>
@@ -131,13 +131,13 @@ pub(crate) fn GetStarted() -> AnyView {
                             "✅ manage your tasks"
                         </p>
                         <div class="flex flex-col gap-3">
-                            <div class="bg-warmgrey-pale border border-warmgrey-light rounded-2xl px-5 py-4">
-                                <p class="text-warmblack text-sm leading-relaxed">
+                            <div class="bg-warmgrey-pale dark:bg-surface-subtle border border-warmgrey-light dark:border-border-default rounded-2xl px-5 py-4">
+                                <p class="text-warmblack dark:text-cream text-sm leading-relaxed">
                                     "can you help me break my objectives down into tasks? for each task, let's set a deadline, priority, any relevant context, and tags if they make sense."
                                 </p>
                             </div>
-                            <div class="bg-warmgrey-pale border border-warmgrey-light rounded-2xl px-5 py-4">
-                                <p class="text-warmblack text-sm leading-relaxed">
+                            <div class="bg-warmgrey-pale dark:bg-surface-subtle border border-warmgrey-light dark:border-border-default rounded-2xl px-5 py-4">
+                                <p class="text-warmblack dark:text-cream text-sm leading-relaxed">
                                     "I just merged my pr. can you mark it as complete and tell me what's next on my list?"
                                 </p>
                             </div>
@@ -151,18 +151,18 @@ pub(crate) fn GetStarted() -> AnyView {
                             "💬 check in with jebby"
                         </p>
                         <div class="flex flex-col gap-3">
-                            <div class="bg-warmgrey-pale border border-warmgrey-light rounded-2xl px-5 py-4">
-                                <p class="text-warmblack text-sm leading-relaxed">
+                            <div class="bg-warmgrey-pale dark:bg-surface-subtle border border-warmgrey-light dark:border-border-default rounded-2xl px-5 py-4">
+                                <p class="text-warmblack dark:text-cream text-sm leading-relaxed">
                                     "can you ask jebby what I need to get done today? give me a briefing based on my priorities and any upcoming deadlines."
                                 </p>
                             </div>
-                            <div class="bg-warmgrey-pale border border-warmgrey-light rounded-2xl px-5 py-4">
-                                <p class="text-warmblack text-sm leading-relaxed">
+                            <div class="bg-warmgrey-pale dark:bg-surface-subtle border border-warmgrey-light dark:border-border-default rounded-2xl px-5 py-4">
+                                <p class="text-warmblack dark:text-cream text-sm leading-relaxed">
                                     "let's do a retro of my week. what did I get done, what slipped, and what should I carry forward?"
                                 </p>
                             </div>
-                            <div class="bg-warmgrey-pale border border-warmgrey-light rounded-2xl px-5 py-4">
-                                <p class="text-warmblack text-sm leading-relaxed">
+                            <div class="bg-warmgrey-pale dark:bg-surface-subtle border border-warmgrey-light dark:border-border-default rounded-2xl px-5 py-4">
+                                <p class="text-warmblack dark:text-cream text-sm leading-relaxed">
                                     "what's coming up next week? help me plan ahead based on my tasks and objectives."
                                 </p>
                             </div>

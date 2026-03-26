@@ -6,13 +6,16 @@
 
 ### Features
 
-- Major refactor: SSR with Leptos, real OAuth session auth
-- Theme switcher with embedded assets
+- Migrated to Cargo workspace (`app`, `frontend`, `jebbysays-core`)
+- Full web UI built with Leptos: landing page, user dashboard for objectives and tasks
+- PKCE OAuth flow with JWKS validation and cookie-persisted sessions
+- Dark mode with cookie-persisted preference
+- Embedded static asset serving via `rust-embed`
 
 ### Fixes
 
-- improve schemars descriptions to improve reliability of agent interaction
-- make objective_id required for add_task()
+- Improved schemars descriptions for more reliable MCP agent interaction
+- `objective_id` is now required on `add_task`
  
 ## 0.1.1
 

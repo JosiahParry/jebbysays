@@ -26,6 +26,13 @@ implementation end-to-end.
 - "You're right" is banned.
 - Never manage git unless explicitly asked.
 
+## Changelog
+
+- When adding a bug fix, feature, or breaking change to the app, add an entry under the appropriate section in `## Development` in `CHANGELOG.md`.
+- Only include a section (`### Breaking`, `### Features`, `### Fixes`) if there is content for it. Omit empty sections.
+- Do not add changelog entries for tooling, justfile rules, or anything that doesn't affect the app itself.
+- Use conventional commits: `feat:`, `fix:`, `feat!:` / `fix!:` for breaking changes. This feeds `git sv` for automatic version bumping.
+
 ## Writing style
 
 Never use an " – ". Prefer a genuine em-dash or commas. 

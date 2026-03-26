@@ -8,20 +8,20 @@ resolver = "2"
 members = ["app", "frontend", "jebbysays-core"]
 
 [workspace.dependencies]
+icondata = { version = "0.5.0", default-features = false, features = ["lucide"] }
 # Leptos
 leptos = { version = "0.8.2" }
 leptos_axum = { version = "0.8.2" }
+leptos_icons = { version = "0.7.0" }
 leptos_meta = { version = "0.8.2" }
 leptos_router = { version = "0.8.2" }
-leptos_icons = { version = "0.7.0" }
 leptos-use = { version = "0.18", features = ["use_color_mode"] }
-icondata = { version = "0.5.0", default-features = false, features = ["lucide"] }
 
 # Web / Axum
 axum = { version = "0.8.4", features = ["macros"] }
 http = "1.3.1"
-reqwest = { version = "0.13.2", features = ["json", "form"] }
 oauth2 = { version = "5.0.0" }
+reqwest = { version = "0.13.2", features = ["form", "json"] }
 tower = { version = "0.5.2", features = ["full"] }
 tower-http = { version = "0.6.4", features = ["full"] }
 tower-sessions = { version = "0.14" }
@@ -68,11 +68,11 @@ tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
 clap = { version = "4.6.0", features = ["derive"] }
 dirs = "6.0.0"
 
+base64 = "0.22"
+cfg-if = "1.0.0"
 rand = "0.9"
 sha2 = "0.10"
-base64 = "0.22"
 urlencoding = "2"
-cfg-if = "1.0.0"
 # Wasm
 wasm-bindgen = "0.2.106"
 
@@ -155,14 +155,16 @@ name = "jebbysays"
 path = "src/main.rs"
 
 [dependencies]
-app = { path = "./app", default-features = false, features = ["ssr"] , version = "0.2.1" }
-rust-embed = { version = "8", features = ["include-exclude"] }
-mime_guess = "2"
-jebbysays-core = { path = "./jebbysays-core", features = ["ssr"] , version = "0.2.1" }
+app = { path = "./app", default-features = false, features = ["ssr"] }
+jebbysays-core = { path = "./jebbysays-core", version = "0.2.1", features = [
+  "ssr"
+] }
 leptos = { workspace = true, features = ["ssr"] }
 leptos_axum = { workspace = true }
 leptos_meta = { workspace = true }
 leptos_router = { workspace = true }
+mime_guess = "2"
+rust-embed = { version = "8", features = ["include-exclude"] }
 
 anyhow = { workspace = true }
 axum = { workspace = true }

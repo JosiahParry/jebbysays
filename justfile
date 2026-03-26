@@ -34,8 +34,12 @@ new-migration name:
 bump:
     #!/usr/bin/env bash
     version=$(git sv nv)
-    cargo set-version $version
-    git add Cargo.toml Cargo.lock
+    if [[ -z "$version" ]]; then
+        echo "No new version (git sv nv returned nothing)"
+        exit 1
+    fi
+    cargo release version $version --execute
+    git add Cargo.toml app/Cargo.toml frontend/Cargo.toml jebbysays-core/Cargo.toml Cargo.lock
     git commit -m "chore: bump version to $version"
     git sv tag
     git push && git push --tags

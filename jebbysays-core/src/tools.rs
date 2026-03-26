@@ -13,54 +13,76 @@ use ulid::Ulid;
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct ObjectiveIdParams {
+    #[schemars(description = "ULID of the objective. Read objectives://all to get valid IDs.")]
     pub id: String,
 }
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct TaskIdParams {
+    #[schemars(description = "ULID of the task. Prefer tasks://objective/{id}/incomplete or tasks://objective/{id}/completed; fall back to tasks://incomplete or tasks://completed if the objective is unknown.")]
     pub id: String,
 }
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct AddObjectiveParams {
+    #[schemars(description = "Short, descriptive title for the objective.")]
     pub title: String,
+    #[schemars(description = "Additional context or detail about the objective.")]
     pub context: Option<String>,
+    #[schemars(description = "Priority from 1 (highest) to 5 (lowest). Defaults to 3.")]
     pub priority: Option<i64>,
 }
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct ModifyObjectiveParams {
+    #[schemars(description = "ULID of the objective to modify. Read objectives://all to get valid IDs.")]
     pub id: String,
+    #[schemars(description = "Updated title for the objective.")]
     pub title: Option<String>,
+    #[schemars(description = "Updated context or detail about the objective.")]
     pub context: Option<String>,
+    #[schemars(description = "Priority from 1 (highest) to 5 (lowest).")]
     pub priority: Option<i64>,
 }
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct AddTaskParams {
+    #[schemars(description = "Short, descriptive title for the task.")]
     pub title: String,
+    #[schemars(description = "Additional context or detail about the task.")]
     pub context: Option<String>,
+    #[schemars(description = "Optional deadline as a UTC timestamp.")]
     pub deadline: Option<Timestamp>,
+    #[schemars(description = "Priority from 1 (highest) to 5 (lowest). Defaults to 3.")]
     pub priority: Option<i64>,
+    #[schemars(description = "Optional list of tags for supplementary categorization.")]
     pub tags: Option<Vec<String>>,
-    pub objective: Option<String>,
+    #[schemars(description = "ULID of the objective this task belongs to. Read objectives://all to get valid IDs.")]
+    pub objective: String,
     #[schemars(
-        description = "ID of a task that must be completed before this one can start. Tasks that are depended upon by others should be given higher priority, as completing them unblocks downstream work."
+        description = "ULID of a task that must be completed before this one can start. Read tasks://incomplete or tasks://objective/{id}/incomplete to get valid IDs. Tasks that are depended upon by others should be given higher priority, as completing them unblocks downstream work."
     )]
     pub depends_on: Option<String>,
 }
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct ModifyTaskParams {
+    #[schemars(description = "ULID of the task to modify. Prefer tasks://objective/{id}/incomplete or tasks://objective/{id}/completed; fall back to tasks://incomplete or tasks://completed if the objective is unknown.")]
     pub id: String,
+    #[schemars(description = "Updated title for the task.")]
     pub title: Option<String>,
+    #[schemars(description = "Updated context or detail about the task.")]
     pub context: Option<String>,
+    #[schemars(description = "Updated deadline as a UTC timestamp.")]
     pub deadline: Option<Timestamp>,
+    #[schemars(description = "Priority from 1 (highest) to 5 (lowest).")]
     pub priority: Option<i64>,
+    #[schemars(description = "Updated list of tags for supplementary categorization.")]
     pub tags: Option<Vec<String>>,
+    #[schemars(description = "ULID of the objective this task belongs to. Read objectives://all to get valid IDs.")]
     pub objective: Option<String>,
     #[schemars(
-        description = "ID of a task that must be completed before this one can start. Tasks that are depended upon by others should be given higher priority, as completing them unblocks downstream work."
+        description = "ULID of a task that must be completed before this one can start. Read tasks://incomplete or tasks://objective/{id}/incomplete to get valid IDs. Tasks that are depended upon by others should be given higher priority, as completing them unblocks downstream work."
     )]
     pub depends_on: Option<String>,
 }
@@ -97,7 +119,7 @@ impl Portfolio {
 
     #[tracing::instrument(skip(self), fields(user_id = %self.user_id))]
     #[tool(
-        description = "Create a new task. Use depends_on to link a task to a prerequisite; tasks that are depended upon by others should be given higher priority, as completing them unblocks downstream work."
+        description = "Create a new task. The objective field is required and must be a valid objective ULID — read the objectives://all resource to get available objective IDs. Use depends_on to link a task to a prerequisite; tasks that are depended upon by others should be given higher priority, as completing them unblocks downstream work."
     )]
     async fn add_task(
         &self,
@@ -106,7 +128,7 @@ impl Portfolio {
         let id = Ulid::new().to_string();
         let created = Timestamp::now().as_millisecond();
         let priority = params.priority.unwrap_or(3);
-        let objective = params.objective.unwrap_or_else(|| "other".to_string());
+        let objective = params.objective;
         let tags = params.tags.map(Json);
         let deadline = params.deadline.map(|t| t.as_millisecond());
 
@@ -134,7 +156,7 @@ impl Portfolio {
     }
 
     #[tracing::instrument(skip(self), fields(user_id = %self.user_id))]
-    #[tool(description = "Create a new objective")]
+    #[tool(description = "Create a new objective. Objectives are overarching goals you want to accomplish — tasks are tracked against them. Every task must be linked to an objective by its ULID.")]
     async fn add_objective(
         &self,
         Parameters(params): Parameters<AddObjectiveParams>,
@@ -160,7 +182,7 @@ impl Portfolio {
     }
 
     #[tracing::instrument(skip(self), fields(user_id = %self.user_id))]
-    #[tool(description = "Delete an objective by ID")]
+    #[tool(description = "Delete an objective by ID. Read objectives://all to get valid objective IDs.")]
     async fn delete_objective(
         &self,
         Parameters(params): Parameters<ObjectiveIdParams>,
@@ -179,7 +201,7 @@ impl Portfolio {
     }
 
     #[tracing::instrument(skip(self), fields(user_id = %self.user_id))]
-    #[tool(description = "Delete a task by ID")]
+    #[tool(description = "Delete an erroneously created task. Do not use this to complete a task — use complete_task instead. Prefer tasks://objective/{id}/incomplete to get valid task IDs; fall back to tasks://incomplete if the objective is unknown.")]
     async fn delete_task(
         &self,
         Parameters(params): Parameters<TaskIdParams>,
@@ -198,7 +220,7 @@ impl Portfolio {
     }
 
     #[tracing::instrument(skip(self), fields(user_id = %self.user_id))]
-    #[tool(description = "Mark a task as completed")]
+    #[tool(description = "Mark a task as completed. Prefer tasks://objective/{id}/incomplete to get valid task IDs; fall back to tasks://incomplete if the objective is unknown.")]
     async fn complete_task(
         &self,
         Parameters(params): Parameters<TaskIdParams>,
@@ -220,7 +242,7 @@ impl Portfolio {
 
     #[tracing::instrument(skip(self), fields(user_id = %self.user_id))]
     #[tool(
-        description = "Modify fields of an existing task. Use depends_on to link a task to a prerequisite; tasks that are depended upon by others should be given higher priority, as completing them unblocks downstream work."
+        description = "Modify fields of an existing task. Prefer tasks://objective/{id}/incomplete to get valid task IDs; fall back to tasks://incomplete if the objective is unknown. Use depends_on to link a task to a prerequisite; tasks that are depended upon by others should be given higher priority, as completing them unblocks downstream work."
     )]
     async fn modify_task(
         &self,
@@ -268,7 +290,7 @@ impl Portfolio {
     }
 
     #[tracing::instrument(skip(self), fields(user_id = %self.user_id))]
-    #[tool(description = "Modify fields of an existing objective")]
+    #[tool(description = "Modify fields of an existing objective. Read objectives://all to get valid objective IDs.")]
     async fn modify_objective(
         &self,
         Parameters(params): Parameters<ModifyObjectiveParams>,

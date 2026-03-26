@@ -117,7 +117,7 @@ checksum = "7f202df86484c868dbad7eaa557ef785d5c66295e41b460ef922eca0723b842c"
 
 [[package]]
 name = "app"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "cfg-if",
  "http",
@@ -1096,7 +1096,7 @@ dependencies = [
 
 [[package]]
 name = "frontend"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "app",
  "console_error_panic_hook",
@@ -1793,7 +1793,7 @@ checksum = "8f42a60cbdf9a97f5d2305f08a87dc4e09308d1276d28c869c684d7777685682"
 
 [[package]]
 name = "jebbysays"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "anyhow",
  "app",
@@ -1821,7 +1821,7 @@ dependencies = [
 
 [[package]]
 name = "jebbysays-core"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "anyhow",
  "axum",

@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 icondata.workspace = true
-jebbysays-core = { path = "../jebbysays-core", default-features = false , version = "0.2.1" }
+jebbysays-core = { path = "../jebbysays-core", default-features = false }
 leptos.workspace = true
 leptos_axum = { workspace = true, optional = true }
 leptos_icons.workspace = true

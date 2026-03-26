@@ -1,6 +1,6 @@
 [package]
 name = "jebbysays"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 
 [workspace]
@@ -155,8 +155,8 @@ name = "jebbysays"
 path = "src/main.rs"
 
 [dependencies]
-app = { path = "./app", default-features = false, features = ["ssr"] }
-jebbysays-core = { path = "./jebbysays-core", version = "0.2.1", features = [
+app = { path = "./app", default-features = false, features = ["ssr"] , version = "0.2.2" }
+jebbysays-core = { path = "./jebbysays-core", version = "0.2.2", features = [
   "ssr"
 ] }
 leptos = { workspace = true, features = ["ssr"] }
